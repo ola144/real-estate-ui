@@ -34,6 +34,12 @@ export class UserService {
     return this.http.get<ApiResponse<User>>(`${this.apiUrl}/users`);
   }
 
+  getUserById(id: string): Observable<{ success: boolean; message?: string; data: User }> {
+    return this.http.get<{ success: boolean; message?: string; data: User }>(
+      `${this.apiUrl}/users/${id}`,
+    );
+  }
+
   updateUserDetails(payload: any): Observable<UpdateApiResponse<User>> {
     return this.http.patch<UpdateApiResponse<User>>(`${this.apiUrl}/users/update-user`, payload);
   }

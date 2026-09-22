@@ -99,6 +99,29 @@
 
           Agent
         </a>
+
+        <a
+          (click)="onClose()"
+          routerLink="/dashboard/users"
+          routerLinkActive="active"
+          class="flex h-10 items-center gap-3 rounded-lg px-3 text-xs font-medium text-gray-500 transition hover:bg-gray-50 hover:text-gray-900 dark:text-gray-400 dark:hover:bg-[#202428] dark:hover:text-white"
+        >
+          <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <circle cx="9" cy="8" r="3" stroke-width="1.8" />
+            <path
+              stroke-width="1.8"
+              stroke-linecap="round"
+              d="M3 20c.7-3.5 2.7-5 6-5s5.3 1.5 6 5"
+            />
+            <path
+              stroke-width="1.8"
+              stroke-linecap="round"
+              d="M16 5.5a3 3 0 010 5.8M17 15c2.2.6 3.5 2 4 5"
+            />
+          </svg>
+
+          Users
+        </a>
       }
 
       <!-- Bookings -->
