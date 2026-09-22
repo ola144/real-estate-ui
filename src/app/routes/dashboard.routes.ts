@@ -16,6 +16,8 @@ import { BookingsPage } from '../pages/bookings/bookings';
 import { BookingDetails } from '../pages/booking-details/booking-details';
 import { roleGuard } from '../guards/role-guard';
 import { authGuard } from '../guards/auth/auth-guard';
+import { Users } from '../pages/users/users';
+import { UserDetails } from '../pages/user-details/user-details';
 export const DASHBOARD_ROUTES: Routes = [
   {
     path: '',
@@ -52,6 +54,16 @@ export const DASHBOARD_ROUTES: Routes = [
       {
         path: 'agents/add-agent',
         component: AgentForm,
+        canActivate: [roleGuard('admin')],
+      },
+      {
+        path: 'users',
+        component: Users,
+        canActivate: [roleGuard('admin')],
+      },
+      {
+        path: 'users/details/:id',
+        component: UserDetails,
         canActivate: [roleGuard('admin')],
       },
       {
