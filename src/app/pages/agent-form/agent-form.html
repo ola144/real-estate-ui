@@ -1,0 +1,471 @@
+<div
+  class="min-h-screen bg-[#f5f5f6] px-3 py-3 text-gray-800 transition-colors dark:bg-[#111315] dark:text-gray-100 sm:px-5 lg:px-6 lg:ml-55"
+>
+  <div class="max-w-7xl mx-auto">
+    <!-- ========================================= -->
+    <!-- PAGE HEADER -->
+    <!-- ========================================= -->
+
+    <div class="mb-3 flex items-center justify-between">
+      <h1 class="text-[13px] font-semibold text-gray-900 dark:text-white">Add New Agent</h1>
+    </div>
+
+    <!-- ========================================= -->
+    <!-- FORM CARD -->
+    <!-- ========================================= -->
+
+    <div
+      class="overflow-hidden rounded-md border border-gray-200 bg-white shadow-sm dark:border-[#292d30] dark:bg-[#181b1e]"
+    >
+      <!-- =================== -->
+      <!-- COVER IMAGE -->
+      <!-- =================== -->
+
+      <div class="relative h-29.5 sm:h-37.5">
+        @if (coverPreview()) {
+          <img [src]="coverPreview()" alt="Agent cover" class="h-full w-full object-cover" />
+        } @else {
+          <div class="h-full w-full bg-linear-to-r from-cyan-400 via-blue-600 to-pink-400"></div>
+        }
+
+        <!-- Overlay -->
+        <div class="absolute inset-0 bg-black/5 dark:bg-black/20"></div>
+      </div>
+
+      @if (loading()) {
+        <app-loading></app-loading>
+      } @else {
+        <!-- ============ -->
+        <!-- PROFILE IMAGE -->
+        <!-- ============ -->
+
+        <div class="relative px-4">
+          <div
+            class="-mt-7 h-14.5 w-14.5 overflow-hidden rounded-full border-[3px] border-white bg-gray-100 shadow-md dark:border-[#181b1e] dark:bg-gray-800"
+          >
+            @if (avatarPreview()) {
+              <img [src]="avatarPreview()" alt="Agent profile" class="h-full w-full object-cover" />
+            } @else {
+              <div class="flex h-full w-full items-center justify-center text-gray-400">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="h-5 w-5"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="1.5"
+                    d="M15 19a4 4 0 00-8 0m4-7a3 3 0 100-6 3 3 0 000 6zm6 7a4 4 0 00-3-3.87"
+                  />
+                </svg>
+              </div>
+            }
+          </div>
+
+          <!-- Avatar upload button -->
+
+          <label
+            class="absolute left-13.5 top-px flex h-5 w-5 cursor-pointer items-center justify-center rounded-full border border-white bg-indigo-600 text-white shadow-sm dark:border-[#181b1e]"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-2.5 w-2.5"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
+            </svg>
+
+            <input
+              type="file"
+              accept="image/*"
+              class="hidden"
+              (change)="onAvatarSelected($event)"
+            />
+          </label>
+        </div>
+
+        <!-- ============ -->
+        <!-- FORM -->
+        <!-- ============ -->
+
+        <form [formGroup]="agentForm" class="px-4 pb-5 pt-3">
+          <!-- Form heading -->
+          <div class="mb-3 flex items-center justify-between">
+            <h2 class="text-lg font-semibold text-gray-800 dark:text-white">My details</h2>
+
+            <!-- Desktop actions -->
+            <div class="hidden items-center gap-1.5 sm:flex">
+              <button
+                type="button"
+                (click)="cancel()"
+                class="rounded-md border border-gray-200 bg-white px-2.5 py-1.5 text-sm font-medium text-gray-600 transition hover:bg-gray-50 dark:border-[#34383b] dark:bg-[#181b1e] dark:text-gray-300 dark:hover:bg-[#222629]"
+              >
+                Cancel
+              </button>
+
+              @if (agentId() === undefined) {
+                <button
+                  type="button"
+                  (click)="submit()"
+                  [disabled]="isSubmitting()"
+                  class="rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-medium text-white transition hover:bg-indigo-700 disabled:cursor-not-allowed disabled:opacity-60"
+                >
+                  {{ isSubmitting() ? 'Saving...' : 'Save' }}
+                </button>
+              } @else {
+                <button
+                  type="button"
+                  (click)="edit()"
+                  [disabled]="isSubmitting()"
+                  class="rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-medium text-white transition hover:bg-indigo-700 disabled:cursor-not-allowed disabled:opacity-60"
+                >
+                  {{ isSubmitting() ? 'Updating...' : 'Update' }}
+                </button>
+              }
+            </div>
+          </div>
+
+          <!-- ==================== -->
+          <!-- INPUT GRID -->
+          <!-- ==================== -->
+
+          <div class="grid grid-cols-1 gap-x-3 gap-y-3 sm:grid-cols-2">
+            <!-- First Name -->
+            <div>
+              <label
+                for="firstName"
+                class="mb-1 block text-sm font-medium text-gray-600 dark:text-gray-400"
+              >
+                First name
+              </label>
+
+              <input
+                id="firstName"
+                type="text"
+                formControlName="firstName"
+                placeholder="Johanne"
+                class="h-7 w-full rounded-md border border-gray-200 bg-white px-2.5 text-xs text-gray-700 outline-none transition placeholder:text-gray-300 focus:border-indigo-400 focus:ring-1 focus:ring-indigo-400 dark:border-[#34383b] dark:bg-[#202427] dark:text-gray-200 dark:placeholder:text-gray-600"
+              />
+
+              @if (
+                agentForm.get('firstName')?.invalid &&
+                (agentForm.get('firstName')?.dirty || agentForm.get('firstName')?.touched)
+              ) {
+                <p class="mt-1text-sm text-red-500">First name is required.</p>
+              }
+            </div>
+
+            <!-- Last Name -->
+            <div>
+              <label
+                for="lastName"
+                class="mb-1 block text-sm font-medium text-gray-600 dark:text-gray-400"
+              >
+                Last name
+              </label>
+
+              <input
+                id="lastName"
+                type="text"
+                formControlName="lastName"
+                placeholder="James"
+                class="h-7 w-full rounded-md border border-gray-200 bg-white px-2.5 text-xs text-gray-700 outline-none transition placeholder:text-gray-300 focus:border-indigo-400 focus:ring-1 focus:ring-indigo-400 dark:border-[#34383b] dark:bg-[#202427] dark:text-gray-200 dark:placeholder:text-gray-600"
+              />
+
+              @if (
+                agentForm.get('lastName')?.invalid &&
+                (agentForm.get('lastName')?.dirty || agentForm.get('lastName')?.touched)
+              ) {
+                <p class="mt-1text-sm text-red-500">Last name is required.</p>
+              }
+            </div>
+
+            <!-- Phone -->
+            <div>
+              <label
+                for="phone"
+                class="mb-1 block text-sm font-medium text-gray-600 dark:text-gray-400"
+              >
+                Phone
+              </label>
+
+              <input
+                id="phone"
+                type="tel"
+                formControlName="phone"
+                placeholder="+123 456 7890"
+                class="h-7 w-full rounded-md border border-gray-200 bg-white px-2.5 text-xs text-gray-700 outline-none transition placeholder:text-gray-300 focus:border-indigo-400 focus:ring-1 focus:ring-indigo-400 dark:border-[#34383b] dark:bg-[#202427] dark:text-gray-200 dark:placeholder:text-gray-600"
+              />
+
+              @if (
+                agentForm.get('phone')?.invalid &&
+                (agentForm.get('phone')?.dirty || agentForm.get('phone')?.touched)
+              ) {
+                <p class="mt-1text-sm text-red-500">Please enter a valid phone number.</p>
+              }
+            </div>
+
+            <!-- Gender -->
+            <div>
+              <label
+                for="gender"
+                class="mb-1 block text-sm font-medium text-gray-600 dark:text-gray-400"
+              >
+                Gender
+              </label>
+
+              <div class="relative">
+                <select
+                  id="gender"
+                  formControlName="gender"
+                  class="h-7 w-full appearance-none rounded-md border border-gray-200 bg-white px-2.5 text-xs text-gray-700 outline-none transition focus:border-indigo-400 focus:ring-1 focus:ring-indigo-400 dark:border-[#34383b] dark:bg-[#202427] dark:text-gray-200"
+                >
+                  <option value="">Select gender</option>
+                  <option value="Male">Male</option>
+                  <option value="Female">Female</option>
+                  <option value="Other">Other</option>
+                </select>
+                @if (
+                  agentForm.get('gender')?.invalid &&
+                  (agentForm.get('gender')?.dirty || agentForm.get('gender')?.touched)
+                ) {
+                  <p class="mt-1text-sm text-red-500">Gender is required.</p>
+                }
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="pointer-events-none absolute right-2 top-1/2 h-3 w-3 -translate-y-1/2 text-gray-400"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+                </svg>
+              </div>
+            </div>
+
+            <!-- Email -->
+            <div>
+              <label
+                for="email"
+                class="mb-1 block text-sm font-medium text-gray-600 dark:text-gray-400"
+              >
+                Email
+              </label>
+
+              <input
+                id="email"
+                type="email"
+                formControlName="email"
+                placeholder="hussain@gmail.com"
+                class="h-7 w-full rounded-md border border-gray-200 bg-white px-2.5 text-xs text-gray-700 outline-none transition placeholder:text-gray-300 focus:border-indigo-400 focus:ring-1 focus:ring-indigo-400 dark:border-[#34383b] dark:bg-[#202427] dark:text-gray-200 dark:placeholder:text-gray-600 disabled:cursor-no-drop"
+              />
+
+              @if (
+                agentForm.get('email')?.invalid &&
+                (agentForm.get('email')?.dirty || agentForm.get('email')?.touched)
+              ) {
+                <p class="mt-1text-sm text-red-500">Please enter a valid email.</p>
+              }
+            </div>
+
+            <!-- Country -->
+            <!-- <div>
+            <label
+              for="country"
+              class="mb-1 block text-sm font-medium text-gray-600 dark:text-gray-400"
+            >
+              Country
+            </label>
+
+            <div class="relative">
+              <select
+                id="country"
+                formControlName="country"
+                class="h-7 w-full appearance-none rounded-md border border-gray-200 bg-white px-2.5 text-xs text-gray-700 outline-none transition focus:border-indigo-400 focus:ring-1 focus:ring-indigo-400 dark:border-[#34383b] dark:bg-[#202427] dark:text-gray-200"
+              >
+                <option value="">Select country</option>
+                @for (item of countries(); track $index) {
+
+                }
+                <option value="Bangladesh">Bangladesh</option>
+                <option value="Nigeria">Nigeria</option>
+                <option value="United States">United States</option>
+                <option value="Canada">Canada</option>
+                <option value="United Kingdom">United Kingdom</option>
+                <option value="Australia">Australia</option>
+              </select>
+
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="pointer-events-none absolute right-2 top-1/2 h-3 w-3 -translate-y-1/2 text-gray-400"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+              </svg>
+            </div>
+          </div> -->
+
+            <!-- Properties -->
+            <!-- <div>
+            <label
+              for="properties"
+              class="mb-1 block text-sm font-medium text-gray-600 dark:text-gray-400"
+            >
+              Properties
+            </label>
+
+            <input
+              id="properties"
+              type="number"
+              formControlName="properties"
+              min="0"
+              placeholder="12"
+              class="h-7 w-full rounded-md border border-gray-200 bg-white px-2.5 text-xs text-gray-700 outline-none transition placeholder:text-gray-300 focus:border-indigo-400 focus:ring-1 focus:ring-indigo-400 dark:border-[#34383b] dark:bg-[#202427] dark:text-gray-200 dark:placeholder:text-gray-600"
+            />
+          </div> -->
+          </div>
+
+          <!-- ================== -->
+          <!-- FILE UPLOAD -->
+          <!-- ================== -->
+
+          <!-- <div class="mt-3">
+            <label
+              class="flex min-h-19.5 cursor-pointer flex-col items-center justify-center rounded-md border border-dashed border-gray-200 bg-gray-50 px-4 py-3 transition hover:border-indigo-300 hover:bg-indigo-50/30 dark:border-[#34383b] dark:bg-[#202427] dark:hover:border-indigo-500/50 dark:hover:bg-indigo-950/10"
+              (dragover)="onDragOver($event)"
+              (drop)="onDrop($event)"
+            >
+              Upload icon 
+              <div
+                class="mb-1 flex h-6 w-6 items-center justify-center rounded-full bg-indigo-50 text-indigo-500 dark:bg-indigo-950/40 dark:text-indigo-400"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="h-3 w-3"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  stroke-width="1.8"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M12 16V4m0 0l-4 4m4-4l4 4M5 20h14"
+                  />
+                </svg>
+              </div>
+
+              <p class="text-sm text-gray-400 dark:text-gray-500">
+                Click to upload or drag and drop
+              </p>
+
+              <p class="mt-0.5 text-xs text-gray-300 dark:text-gray-600">
+                SVG, PNG, JPG or GIF (max. 800x400px)
+              </p>
+
+              <input
+                type="file"
+                accept=".svg,.png,.jpg,.jpeg,.gif"
+                class="hidden"
+                (change)="onFileSelected($event)"
+              />
+            </label>
+          </div> -->
+
+          <!-- ==================== -->
+          <!-- UPLOADED FILES -->
+          <!-- ==================== -->
+
+          <!-- @if (uploadedFiles().length > 0) {
+            <div class="mt-2 space-y-1.5">
+              @for (file of uploadedFiles(); track file.name; let i = $index) {
+                <div
+                  class="flex items-center justify-between rounded-md border border-gray-100 bg-gray-50 px-2 py-1.5 dark:border-[#34383b] dark:bg-[#202427]"
+                >
+                  <div class="flex min-w-0 items-center gap-2">
+                    <div
+                      class="flex h-5 w-5 shrink-0 items-center justify-center rounded bg-indigo-50 text-indigo-500 dark:bg-indigo-950/40"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        class="h-2.5 w-2.5"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                        stroke-width="2"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"
+                        />
+
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M14 2v6h6" />
+                      </svg>
+                    </div>
+
+                    <span class="truncatetext-sm text-gray-600 dark:text-gray-300">
+                      {{ file.name }}
+                    </span>
+                  </div>
+
+                  <button
+                    type="button"
+                    (click)="removeFile(i)"
+                    class="ml-2 text-xs text-gray-400 hover:text-red-500"
+                  >
+                    ×
+                  </button>
+                </div>
+              }
+            </div>
+          } -->
+
+          <!-- ================= -->
+          <!-- MOBILE ACTIONS -->
+          <!-- ================= -->
+
+          <div class="mt-4 flex justify-end gap-2 sm:hidden">
+            <button
+              type="button"
+              (click)="cancel()"
+              class="rounded-md border border-gray-200 bg-white px-3 py-1.5 text-xs font-medium text-gray-600 dark:border-[#34383b] dark:bg-[#181b1e] dark:text-gray-300"
+            >
+              Cancel
+            </button>
+
+            @if (agentId() === undefined) {
+              <button
+                type="button"
+                (click)="submit()"
+                [disabled]="isSubmitting()"
+                class="rounded-md bg-indigo-600 px-3 py-1.5 text-xs font-medium text-white hover:bg-indigo-700 disabled:opacity-60"
+              >
+                {{ isSubmitting() ? 'Saving...' : 'Save' }}
+              </button>
+            } @else {
+              <button
+                type="button"
+                (click)="edit()"
+                [disabled]="isSubmitting()"
+                class="rounded-md bg-indigo-600 px-3 py-1.5 text-xs font-medium text-white hover:bg-indigo-700 disabled:opacity-60"
+              >
+                {{ isSubmitting() ? 'Updating...' : 'Update' }}
+              </button>
+            }
+          </div>
+        </form>
+      }
+    </div>
+  </div>
+</div>

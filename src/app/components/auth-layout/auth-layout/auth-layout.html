@@ -1,0 +1,33 @@
+<div class="min-h-screen bg-white dark:bg-[#171a1c] overflow-y-hidden">
+  <div class="grid min-h-screen grid-cols-1 lg:grid-cols-2">
+    <!-- =========================
+         FORM SECTION
+    ========================== -->
+    <section class="flex min-h-screen items-center justify-center px-5 py-10 sm:px-8 lg:px-12">
+      <div class="w-full max-w-105">
+        <!-- Logo -->
+        <div class="mb-2">
+          <a routerLink="/" class="inline-flex items-center gap-2">
+            <div class="flex h-9 w-9 items-center justify-center rounded-lg bg-indigo-600">
+              <span class="text-lg font-bold text-white">R</span>
+            </div>
+
+            <span class="text-xl font-bold text-gray-900 dark:text-white"> RealEstate </span>
+          </a>
+        </div>
+
+        <router-outlet></router-outlet>
+      </div>
+    </section>
+
+    <!-- =========================
+         IMAGE SECTION
+    ========================== -->
+    <section class="relative hidden h-screen overflow-hidden bg-[#e8e8e8] lg:block">
+      <img src="/images/auth-building.png" alt="Modern building" class="inset-0 w-full h-full" />
+
+      <!-- Optional overlay -->
+      <div class="absolute inset-0 bg-black/5 dark:bg-black/10"></div>
+    </section>
+  </div>
+</div>

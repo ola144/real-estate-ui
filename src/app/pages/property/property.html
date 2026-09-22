@@ -1,0 +1,398 @@
+<div
+  class="min-h-[calc(100vh-64px)] bg-[#f7f8fa] p-4 text-[#20242c] sm:p-6 dark:bg-[#101214] dark:text-white lg:ml-55"
+>
+  <div class="mx-auto max-w-7xl">
+    <!-- ===== -->
+    <!-- HEADER -->
+    <!-- ===== -->
+
+    <div class="mb-4 flex items-center justify-between">
+      <div>
+        <h1 class="md:text-2xl text-xl font-semibold text-gray-900 dark:text-white">
+          Property List
+        </h1>
+      </div>
+
+      <button
+        type="button"
+        routerLink="/dashboard/properties/create-property"
+        class="flex items-center gap-1.5 rounded-md bg-[#4f5bea] px-4 py-2 text-sm font-medium text-white transition hover:bg-[#414bd3]"
+      >
+        <span class="text-sm">+</span>
+
+        Add Property
+      </button>
+    </div>
+
+    <!-- ===== -->
+    <!-- FILTER BAR -->
+    <!-- ===== -->
+
+    <div class="mb-5 flex flex-wrap items-center gap-2 rounded-xl bg-white p-2 dark:bg-[#181c20]">
+      <!-- SEARCH -->
+
+      <div
+        class="flex h-9 sm:w-1/2 w-full min-w-55 flex-1 items-center gap-2 rounded-md border border-transparent bg-[#f5f6f8] px-3 focus-within:border-[#4f5bea] dark:bg-[#202428]"
+      >
+        <svg class="h-4 w-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <circle cx="11" cy="11" r="7" stroke-width="1.8" />
+
+          <path d="m20 20-4-4" stroke-width="1.8" stroke-linecap="round" />
+        </svg>
+
+        <input
+          type="text"
+          placeholder="Enter property name..."
+          (input)="onSearch($event)"
+          class="sm:w-1/2 w-full bg-transparent text-sm text-gray-700 outline-none placeholder:text-gray-400 dark:text-white"
+        />
+      </div>
+
+      <!-- STATUS -->
+
+      <!-- <div class="relative">
+        <button
+          type="button"
+          (click)="toggleStatus()"
+          class="flex h-9 min-w-25 items-center justify-between gap-2 rounded-md bg-[#f5f6f8] px-3 text-[10px] text-gray-500 dark:bg-[#202428] dark:text-gray-300"
+        >
+          {{ selectedStatus() }}
+
+          <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path d="m6 9 6 6 6-6" stroke-width="2" stroke-linecap="round" />
+          </svg>
+        </button>
+
+        @if (statusOpen()) {
+          <div
+            class="absolute left-0 top-10.5 z-50 w-32.5 overflow-hidden rounded-md border border-gray-100 bg-white py-1 shadow-xl dark:border-gray-700 dark:bg-[#202428]"
+          >
+            @for (option of statusOptions; track option) {
+              <button
+                type="button"
+                (click)="selectStatus(option)"
+                class="block w-full px-3 py-2 text-left text-[10px] text-gray-500 hover:bg-gray-50 dark:text-gray-300 dark:hover:bg-gray-700"
+                [class.bg-[#4f5bea]]="selectedStatus() === option"
+                [class.text-white]="selectedStatus() === option"
+              >
+                {{ option }}
+              </button>
+            }
+          </div>
+        }
+      </div> -->
+
+      <!-- TYPE -->
+
+      <!-- <div class="relative">
+        <button
+          type="button"
+          (click)="toggleType()"
+          class="flex h-9 min-w-25 items-center justify-between gap-2 rounded-md bg-[#f5f6f8] px-3 text-[10px] text-gray-500 dark:bg-[#202428] dark:text-gray-300"
+        >
+          {{ selectedType() }}
+
+          <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path d="m6 9 6 6 6-6" stroke-width="2" stroke-linecap="round" />
+          </svg>
+        </button>
+
+        @if (typeOpen()) {
+          <div
+            class="absolute left-0 top-10.5 z-50 w-fit overflow-y-auto h-96 rounded-md border border-gray-100 bg-white py-1 shadow-xl dark:border-gray-700 dark:bg-[#202428]"
+          >
+            @for (option of typeOptions; track option) {
+              <button
+                type="button"
+                (click)="selectType(option)"
+                class="block w-full px-3 py-2 text-left text-[10px] text-gray-500 hover:bg-gray-50 dark:text-gray-300 dark:hover:bg-gray-700"
+                [class.bg-[#4f5bea]]="selectedType() === option"
+                [class.text-white]="selectedType() === option"
+              >
+                {{ option }}
+              </button>
+            }
+          </div>
+        }
+      </div> -->
+
+      <!-- COUNTRY -->
+
+      <!-- <div class="relative">
+        <select
+          name="country"
+          id="country"
+          [(ngModel)]="selectedCountry"
+          (change)="selectCountry($event)"
+          class="flex h-9 min-w-27.5 items-center justify-between gap-2 rounded-md bg-[#f5f6f8] px-3 text-[10px] text-gray-500 dark:bg-[#202428] dark:text-gray-300 outline-none"
+        >
+          <option value="All">All</option>
+          @for (option of countries(); track option) {
+            <option [value]="option.code">
+              {{ option.name }}
+            </option>
+          }
+        </select>
+      </div> -->
+
+      <!-- STATE -->
+
+      <!-- <div class="relative">
+        <select
+          name="state"
+          id="state"
+          class="flex h-9 min-w-27.5 items-center justify-between gap-2 rounded-md bg-[#f5f6f8] px-3 text-[10px] text-gray-500 dark:bg-[#202428] dark:text-gray-300 outline-none"
+        >
+          <option value="All">All</option>
+          @for (option of states(); track option) {
+            <option [value]="option.name">
+              {{ option.name }}
+            </option>
+          }
+        </select>
+      </div> -->
+    </div>
+
+    <!-- ================-->
+    <!-- PROPERTY GRID -->
+    <!-- ================-->
+
+    @if (loading()) {
+      <app-loading></app-loading>
+    } @else {
+      @if (properties().length) {
+        <div class="grid grid-cols-1 gap-x-5 gap-y-4 sm:grid-cols-2">
+          @for (property of properties(); track property.id) {
+            <article class="group flex min-w-0 gap-3 shadow-md p-1 rounded-md">
+              <!-- IMAGE -->
+
+              <div
+                class="h-25 w-37.5 shrink-0 overflow-hidden rounded-lg bg-gray-100 sm:h-25 sm:w-37.5 dark:bg-gray-800"
+              >
+                <img
+                  [src]="property.photo"
+                  [alt]="property.title"
+                  class="h-full w-full object-cover transition duration-300 group-hover:scale-105"
+                />
+              </div>
+
+              <!-- DETAILS -->
+
+              <div class="min-w-0 flex-1 py-1">
+                <!-- Price -->
+
+                <span
+                  class="inline-flex rounded bg-[#eef0ff] px-2 py-1 text-sm font-medium text-[#4f5bea] dark:bg-[#292d55] dark:text-[#9ca3ff]"
+                >
+                  {{ property.price | currency: 'N' }}
+                </span>
+
+                <!-- Title -->
+
+                <h3 class="mt-1 truncate text-sm font-semibold text-gray-900 dark:text-white">
+                  {{ property.title }}
+                </h3>
+
+                <!-- Location -->
+
+                <div class="mt-1 flex items-center gap-1 text-xs text-gray-400">
+                  <svg
+                    class="h-3 w-3 shrink-0"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      d="M12 21s7-6.2 7-12a7 7 0 1 0-14 0c0 5.8 7 12 7 12Z"
+                      stroke-width="1.5"
+                    />
+
+                    <circle cx="12" cy="9" r="2" stroke-width="1.5" />
+                  </svg>
+
+                  <span class="truncate">
+                    {{ property.location.address }}
+                  </span>
+                </div>
+
+                <!-- Meta -->
+
+                <div
+                  class="mt-2 flex items-center gap-4 flex-wrap text-xs text-gray-500 dark:text-gray-400"
+                >
+                  <span class="flex items-center gap-1">
+                    <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path d="M4 20v-8a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8" stroke-width="1.5" />
+
+                      <path
+                        d="M4 16h16M7 10V7a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v3"
+                        stroke-width="1.5"
+                      />
+                    </svg>
+
+                    {{ property.beds }} Beds
+                  </span>
+
+                  <span class="flex items-center gap-1">
+                    <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path
+                        d="M4 17h16M6 17v3M18 17v3M7 13h10"
+                        stroke-width="1.5"
+                        stroke-linecap="round"
+                      />
+
+                      <path d="M7 13V7a2 2 0 0 1 2-2h1" stroke-width="1.5" />
+                    </svg>
+
+                    {{ property.area }}M
+                  </span>
+                  <div class="flex items-center gap-5 bg-gray-500/10 px-4 py-2 rounded-lg">
+                    <button
+                      [routerLink]="`/dashboard/properties/details/${property.id}`"
+                      class="text-green-500 hover:text-green-600 transition duration-300 font-bold"
+                      aria-label="View Details"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="20"
+                        height="20"
+                        fill="currentColor"
+                        viewBox="0 0 256 256"
+                      >
+                        <path
+                          d="M245.48,125.57c-.34-.78-8.66-19.23-27.24-37.81C201,70.54,171.38,50,128,50S55,70.54,37.76,87.76c-18.58,18.58-26.9,37-27.24,37.81a6,6,0,0,0,0,4.88c.34.77,8.66,19.22,27.24,37.8C55,185.47,84.62,206,128,206s73-20.53,90.24-37.75c18.58-18.58,26.9-37,27.24-37.8A6,6,0,0,0,245.48,125.57ZM128,194c-31.38,0-58.78-11.42-81.45-33.93A134.77,134.77,0,0,1,22.69,128,134.56,134.56,0,0,1,46.55,95.94C69.22,73.42,96.62,62,128,62s58.78,11.42,81.45,33.94A134.56,134.56,0,0,1,233.31,128C226.94,140.21,195,194,128,194Zm0-112a46,46,0,1,0,46,46A46.06,46.06,0,0,0,128,82Zm0,80a34,34,0,1,1,34-34A34,34,0,0,1,128,162Z"
+                        ></path>
+                      </svg>
+                    </button>
+                    <button
+                      (click)="editProperty(property.id)"
+                      class="text-purple-500 hover:text-purple-600 transition duration-300 font-bold"
+                      aria-label="Edit Property"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="20"
+                        height="20"
+                        fill="currentColor"
+                        viewBox="0 0 256 256"
+                      >
+                        <path
+                          d="M225.91,74.79,181.22,30.1a14,14,0,0,0-19.8,0L38.1,153.41a13.94,13.94,0,0,0-4.1,9.9V208a14,14,0,0,0,14,14H216a6,6,0,0,0,0-12H110.49L225.91,94.59A14,14,0,0,0,225.91,74.79ZM93.52,210H48a2,2,0,0,1-2-2V163.31a2,2,0,0,1,.59-1.41L136,72.49,183.52,120ZM217.42,86.1,192,111.52,144.49,64,169.9,38.59a2,2,0,0,1,2.83,0l44.69,44.68A2,2,0,0,1,217.42,86.1Z"
+                        ></path>
+                      </svg>
+                    </button>
+
+                    <button
+                      class="text-red-500 hover:text-red-600 transition duration-300 font-bold"
+                      aria-label="Delete Property"
+                      (click)="openDeleteModal(property)"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="20"
+                        height="20"
+                        fill="currentColor"
+                        viewBox="0 0 256 256"
+                      >
+                        <path
+                          d="M216,50H174V40a22,22,0,0,0-22-22H104A22,22,0,0,0,82,40V50H40a6,6,0,0,0,0,12H50V208a14,14,0,0,0,14,14H192a14,14,0,0,0,14-14V62h10a6,6,0,0,0,0-12ZM94,40a10,10,0,0,1,10-10h48a10,10,0,0,1,10,10V50H94ZM194,208a2,2,0,0,1-2,2H64a2,2,0,0,1-2-2V62H194ZM110,104v64a6,6,0,0,1-12,0V104a6,6,0,0,1,12,0Zm48,0v64a6,6,0,0,1-12,0V104a6,6,0,0,1,12,0Z"
+                        ></path>
+                      </svg>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </article>
+          }
+        </div>
+      } @else {
+        <!-- EMPTY STATE -->
+
+        <div
+          class="flex min-h-75 items-center justify-center rounded-xl bg-white dark:bg-[#181c20]"
+        >
+          <div class="text-center">
+            <div
+              class="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-gray-100 dark:bg-gray-800"
+            >
+              🏠
+            </div>
+
+            <h3 class="mt-3 text-sm font-semibold">No properties found</h3>
+
+            <p class="mt-1 text-sm text-gray-400">Try adjusting your filters.</p>
+          </div>
+        </div>
+      }
+    }
+
+    <!-- ================== -->
+    <!-- FOOTER / PAGINATION -->
+    <!-- ================== -->
+
+    <div class="mt-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+      <p class="text-xs text-gray-400">
+        Showing
+        {{ showingFrom() }} - {{ showingTo() }}
+        of
+        {{ totalProperties() }}
+        Properties
+      </p>
+
+      <!-- PAGINATION -->
+      <div class="mt-8 flex items-center justify-center gap-3 text-sm">
+        <button
+          type="button"
+          [disabled]="!hasPreviousPage()"
+          (click)="pageChanged(currentPage() - 1)"
+          class="rounded-lg border px-4 py-2 disabled:opacity-40"
+        >
+          Previous
+        </button>
+
+        <span> Page {{ currentPage() }} of {{ totalPages() }} </span>
+
+        <button
+          type="button"
+          [disabled]="!hasNextPage()"
+          (click)="pageChanged(currentPage() + 1)"
+          class="rounded-lg border px-4 py-2 disabled:opacity-40"
+        >
+          Next
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div
+    class="fixed top-0 inset-x-0 z-500 bg-black/50 w-full h-screen items-center justify-center transition-all duration-500 px-10 sm:px-0"
+    [class.hidden]="!deleteModal()"
+    [class.flex]="deleteModal()"
+  >
+    <div
+      class="bg-white dark:bg-gray-400 max-w-lg w-full h-40 rounded-lg p-4 flex flex-col justify-between transition-all duration-500"
+    >
+      <p class="text-center text-black dark:text-white text-lg">
+        Are you sure you want to delete {{ selectedProperty()?.title }}?
+      </p>
+      <div class="flex justify-end">
+        <div class="flex items-center gap-1">
+          <button
+            class="rounded-lg bg-gray-400 text-white text-sm font-bold w-fit py-2 px-4 disabled:bg-gray-400 disabled:cursor-no-drop"
+            (click)="closeDeleteModal()"
+            [disabled]="isDeleting()"
+          >
+            Cancel
+          </button>
+          <button
+            class="rounded-lg bg-red-400 text-white text-sm font-bold w-fit py-2 px-4 disabled:bg-gray-400 disabled:cursor-no-drop"
+            [disabled]="isDeleting()"
+            (click)="handleDeleteProperty()"
+          >
+            {{ isDeleting() ? 'Deleting...' : 'Delete' }}
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

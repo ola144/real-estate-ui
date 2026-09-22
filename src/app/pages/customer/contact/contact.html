@@ -1,0 +1,142 @@
+<main class="bg-white text-[#20242c] transition-colors dark:bg-[#101214] dark:text-white lg:px-8">
+  <div class="mx-auto max-w-7xl px-5 pb-20 pt-32 relative">
+    <div class="grid gap-14 lg:grid-cols-[0.8fr_1.2fr] lg:items-start">
+      <div>
+        <p class="text-xs font-bold uppercase tracking-[0.2em] text-[#789085]">Get in touch</p>
+        <h1 class="mt-4 text-5xl font-semibold tracking-[-0.06em]">Let's find your place.</h1>
+        <p class="mt-6 max-w-sm leading-7 text-gray-500">
+          Tell us a little about what you are looking for. One of our advisors will be in touch
+          within one business day.
+        </p>
+        <div class="mt-10 space-y-5 text-sm">
+          <p>
+            <span class="block text-xs font-bold uppercase tracking-widest text-gray-400"
+              >Email</span
+            ><span class="mt-1 block font-semibold">hello@realestate.properties</span>
+          </p>
+          <p>
+            <span class="block text-xs font-bold uppercase tracking-widest text-gray-400"
+              >Phone</span
+            ><span class="mt-1 block font-semibold">+1 (704) 555-0148</span>
+          </p>
+          <p>
+            <span class="block text-xs font-bold uppercase tracking-widest text-gray-400"
+              >Studio</span
+            ><span class="mt-1 block font-semibold">121 Tryon Street, Charlotte NC</span>
+          </p>
+        </div>
+      </div>
+      <form class="rounded-2xl bg-white p-6 shadow-sm ring-1 ring-black/5 dark:bg-[#181c20] sm:p-9">
+        <div class="grid gap-6 sm:grid-cols-2">
+          <label class="text-sm font-semibold"
+            >First name<input
+              [formField]="contactForm.firstName"
+              class="mt-2 w-full rounded-lg border border-gray-200 bg-[#fbfaf8] px-4 py-3 font-normal outline-none focus:border-[#789085] dark:border-gray-700 dark:bg-[#202428] dark:text-white"
+              placeholder="Your first name"
+            />
+            @if (contactForm.firstName().touched() && contactForm.firstName().invalid()) {
+              <div class="mt-1">
+                @for (error of contactForm.firstName().errors(); track error.kind) {
+                  <p class="text-[10px] text-red-500">
+                    {{ error.message }}
+                  </p>
+                }
+              </div>
+            }</label
+          ><label class="text-sm font-semibold"
+            >Last name<input
+              [formField]="contactForm.lastName"
+              class="mt-2 w-full rounded-lg border border-gray-200 bg-[#fbfaf8] px-4 py-3 font-normal outline-none focus:border-[#789085] dark:border-gray-700 dark:bg-[#202428] dark:text-white"
+              placeholder="Your last name"
+            />
+            @if (contactForm.lastName().touched() && contactForm.lastName().invalid()) {
+              <div class="mt-1">
+                @for (error of contactForm.lastName().errors(); track error.kind) {
+                  <p class="text-[10px] text-red-500">
+                    {{ error.message }}
+                  </p>
+                }
+              </div>
+            }
+          </label>
+        </div>
+        <label class="mt-6 block text-sm font-semibold"
+          >Email address<input
+            [formField]="contactForm.email"
+            type="email"
+            class="mt-2 w-full rounded-lg border border-gray-200 bg-[#fbfaf8] px-4 py-3 font-normal outline-none focus:border-[#789085] dark:border-gray-700 dark:bg-[#202428] dark:text-white"
+            placeholder="you@example.com"
+          />
+          @if (contactForm.email().touched() && contactForm.email().invalid()) {
+            <div class="mt-1">
+              @for (error of contactForm.email().errors(); track error.kind) {
+                <p class="text-[10px] text-red-500">
+                  {{ error.message }}
+                </p>
+              }
+            </div>
+          }</label
+        ><label class="mt-6 block text-sm font-semibold"
+          >What can we help with?<select
+            [formField]="contactForm.subject"
+            class="mt-2 w-full rounded-lg border border-gray-200 bg-[#fbfaf8] px-4 py-3 font-normal outline-none dark:border-gray-700 dark:bg-[#202428] dark:text-white"
+          >
+            <option value="" selected>Select</option>
+            @for (item of subjects(); track $index) {
+              <option [value]="item">{{ item }}</option>
+            }
+          </select>
+          @if (contactForm.subject().controlValue() === 'Something else') {
+            <input
+              [formField]="contactForm.otherSubject"
+              class="mt-2 w-full rounded-lg border border-gray-200 bg-[#fbfaf8] px-4 py-3 font-normal outline-none focus:border-[#789085] dark:border-gray-700 dark:bg-[#202428] dark:text-white"
+              placeholder="Your subject"
+            />
+            @if (contactForm.otherSubject().touched() && contactForm.otherSubject().invalid()) {
+              <div class="mt-1">
+                @for (error of contactForm.otherSubject().errors(); track error.kind) {
+                  <p class="text-[10px] text-red-500">
+                    {{ error.message }}
+                  </p>
+                }
+              </div>
+            }
+          }
+
+          @if (contactForm.subject().touched() && contactForm.subject().invalid()) {
+            <div class="mt-1">
+              @for (error of contactForm.subject().errors(); track error.kind) {
+                <p class="text-[10px] text-red-500">
+                  {{ error.message }}
+                </p>
+              }
+            </div>
+          }</label
+        ><label class="mt-6 block text-sm font-semibold"
+          >Message<textarea
+            [formField]="contactForm.message"
+            rows="4"
+            class="mt-2 w-full resize-none rounded-lg border border-gray-200 bg-[#fbfaf8] px-4 py-3 font-normal outline-none focus:border-[#789085] dark:border-gray-700 dark:bg-[#202428] dark:text-white"
+            placeholder="Tell us what is on your mind..."
+          ></textarea>
+          @if (contactForm.message().touched() && contactForm.message().invalid()) {
+            <div class="mt-1">
+              @for (error of contactForm.message().errors(); track error.kind) {
+                <p class="text-[10px] text-red-500">
+                  {{ error.message }}
+                </p>
+              }
+            </div>
+          }</label
+        ><button
+          [disabled]="contactForm().invalid() || loading()"
+          type="button"
+          class="mt-7 rounded-full bg-[#263b31] px-7 py-3 text-sm font-semibold text-white transition hover:bg-[#3b5748] disabled:cursor-no-drop disabled:bg-[#263b31]/50"
+          (click)="sendMessage()"
+        >
+          {{ loading() ? 'Sending...' : 'Send message' }}
+        </button>
+      </form>
+    </div>
+  </div>
+</main>

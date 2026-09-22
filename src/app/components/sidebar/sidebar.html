@@ -1,0 +1,177 @@
+<!-- =====
+       MOBILE OVERLAY
+  ====== -->
+
+@if (isOpen()) {
+  <div class="fixed inset-0 z-4000 bg-black/40 lg:hidden" (click)="onClose()"></div>
+}
+
+<!-- =====
+       SIDEBAR
+  ====== -->
+
+<aside
+  class="fixed left-0 top-0 z-5000 flex h-screen w-55 flex-col border-r border-[#eceef1] bg-white transition-transform duration-300 dark:border-[#202428] dark:bg-[#16191c] lg:translate-x-0"
+  [class.-translate-x-full]="!isOpen()"
+  [class.translate-x-0]="isOpen()"
+>
+  <!-- Logo -->
+
+  <div class="flex h-16 items-center gap-2 border-b border-[#f0f1f3] px-6 dark:border-[#24272b]">
+    <div class="flex h-7 w-7 items-center justify-center rounded-lg bg-[#4f5bea]">
+      <span class="text-xs font-bold text-white"> Y </span>
+    </div>
+
+    <span class="text-[15px] font-bold tracking-tight"> RealEstate </span>
+
+    <!-- Close mobile sidebar -->
+
+    <button type="button" class="ml-auto text-gray-400 lg:hidden" (click)="onClose()">
+      <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M6 18L18 6M6 6l12 12"
+        />
+      </svg>
+    </button>
+  </div>
+
+  <!-- Navigation -->
+  <nav class="flex-1 px-3 py-5">
+    <p class="mb-3 px-3 text-[10px] font-medium uppercase tracking-wider text-gray-400">Menu</p>
+
+    <div class="space-y-1">
+      <!-- Dashboard -->
+
+      <a
+        (click)="onClose()"
+        routerLink="/dashboard/home"
+        routerLinkActive="active"
+        class="flex h-10 items-center gap-3 rounded-lg px-3 text-xs font-medium text-gray-500 transition hover:bg-gray-50 hover:text-gray-900 dark:text-gray-400 dark:hover:bg-[#202428] dark:hover:text-white"
+      >
+        <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path
+            stroke-width="1.8"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M4 13h6V4H4v9zm10 7h6v-9h-6v9zM4 20h6v-3H4v3zm10-12h6V4h-6v4z"
+          />
+        </svg>
+
+        Dashboard
+      </a>
+
+      <!-- Property -->
+
+      <a
+        (click)="onClose()"
+        routerLink="/dashboard/properties"
+        routerLinkActive="active"
+        class="flex h-10 items-center gap-3 rounded-lg px-3 text-xs font-medium text-gray-500 transition hover:bg-gray-50 hover:text-gray-900 dark:text-gray-400 dark:hover:bg-[#202428] dark:hover:text-white"
+      >
+        <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path
+            stroke-width="1.8"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M3 11l9-7 9 7M5 10v10h14V10M9 20v-6h6v6"
+          />
+        </svg>
+
+        Property
+      </a>
+
+      <!-- Agent -->
+      @if (user?.role === 'admin') {
+        <a
+          (click)="onClose()"
+          routerLink="/dashboard/agents"
+          routerLinkActive="active"
+          class="flex h-10 items-center gap-3 rounded-lg px-3 text-xs font-medium text-gray-500 transition hover:bg-gray-50 hover:text-gray-900 dark:text-gray-400 dark:hover:bg-[#202428] dark:hover:text-white"
+        >
+          <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <circle cx="12" cy="8" r="3" stroke-width="1.8" />
+
+            <path stroke-width="1.8" stroke-linecap="round" d="M5 20c.7-3.5 3-5 7-5s6.3 1.5 7 5" />
+          </svg>
+
+          Agent
+        </a>
+      }
+
+      <!-- Bookings -->
+
+      <a
+        (click)="onClose()"
+        routerLink="/dashboard/bookings"
+        routerLinkActive="active"
+        class="flex h-10 items-center gap-3 rounded-lg px-3 text-xs font-medium text-gray-500 transition hover:bg-gray-50 hover:text-gray-900 dark:text-gray-400 dark:hover:bg-[#202428] dark:hover:text-white"
+      >
+        <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path
+            stroke-width="1.8"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M7 3h10a2 2 0 012 2v14a2 2 0 01-2 2H7a2 2 0 01-2-2V5a2 2 0 012-2zm3 4h4m-4 4h4m-4 4h2"
+          />
+        </svg>
+
+        Bookings
+      </a>
+
+      <!-- Review -->
+
+      <!-- <a
+        (click)="onClose()"
+        routerLink="/dashboard/reviews"
+        routerLinkActive="active"
+        class="flex h-10 items-center gap-3 rounded-lg px-3 text-xs font-medium text-gray-500 transition hover:bg-gray-50 hover:text-gray-900 dark:text-gray-400 dark:hover:bg-[#202428] dark:hover:text-white"
+      >
+        <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path
+            stroke-width="1.8"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M12 3l2.8 5.7 6.2.9-4.5 4.4 1.1 6.2-5.6-3-5.6 3 1.1-6.2L3 9.6l6.2-.9L12 3z"
+          />
+        </svg>
+
+        Review
+      </a> -->
+
+      <!-- Message -->
+
+      <!-- <a
+        (click)="onClose()"
+        routerLink="/dashboard/messages"
+        routerLinkActive="active"
+        class="flex h-10 items-center gap-3 rounded-lg px-3 text-xs font-medium text-gray-500 transition hover:bg-gray-50 hover:text-gray-900 dark:text-gray-400 dark:hover:bg-[#202428] dark:hover:text-white"
+      >
+        <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-width="1.8" stroke-linecap="round" d="M4 5h16v11H8l-4 4V5z" />
+        </svg>
+
+        Message
+      </a> -->
+
+      <!-- Profile -->
+
+      <a
+        (click)="onClose()"
+        routerLink="/dashboard/profile"
+        routerLinkActive="active"
+        class="flex h-10 items-center gap-3 rounded-lg px-3 text-xs font-medium text-gray-500 transition hover:bg-gray-50 hover:text-gray-900 dark:text-gray-400 dark:hover:bg-[#202428] dark:hover:text-white"
+      >
+        <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <circle cx="12" cy="8" r="3" stroke-width="1.8" />
+
+          <path stroke-width="1.8" stroke-linecap="round" d="M5 20c.7-3.5 3-5 7-5s6.3 1.5 7 5" />
+        </svg>
+
+        My Profile
+      </a>
+    </div>
+  </nav>
+</aside>

@@ -1,3 +1,31 @@
 /* You can add global styles to this file, and also import other style files */
-
 @import 'tailwindcss';
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+button {
+  @apply cursor-pointer disabled:cursor-no-drop;
+}
+
+.active {
+  @apply bg-[#4f5bea] text-white;
+}
+
+.userActiveMenu {
+  @apply border-b-2 border-b-white;
+}
+
+.scrollBg {
+  @apply bg-[#33473e];
+}
+
+.dark .apexcharts-tooltip {
+  background: #181c20 !important;
+  border-color: #30363d !important;
+  color: #fff !important;
+}
+
+.dark .apexcharts-tooltip-title {
+  background: #202428 !important;
+  border-bottom-color: #30363d !important;
+}

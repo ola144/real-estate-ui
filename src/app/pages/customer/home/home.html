@@ -1,0 +1,109 @@
+<main
+  class="relative bg-white text-[#20242c] transition-colors dark:bg-[#101214] dark:text-white w-full"
+>
+  <!-- Hero -->
+  <section
+    class="relative min-h-167.5 overflow-hidden bg-[#33473e] px-5 pb-16 pt-36 text-white lg:px-8"
+  >
+    <img
+      src="https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=2200&q=85"
+      alt="Sunlit modern living room"
+      class="absolute inset-0 h-full w-full object-cover opacity-55"
+    />
+    <div
+      class="absolute inset-0 bg-linear-to-r from-[#1d3028]/90 via-[#263b31]/65 to-transparent"
+    ></div>
+    <div class="relative mx-auto flex max-w-7xl flex-col justify-center">
+      <p class="mb-5 text-xs font-bold uppercase tracking-[0.25em] text-[#d7ef61]">
+        A better place to begin
+      </p>
+      <h1
+        class="max-w-2xl text-5xl font-semibold leading-[0.98] tracking-[-0.06em] sm:text-7xl capitalize"
+      >
+        Find a property that fits your life.
+      </h1>
+      <p class="mt-7 max-w-lg text-base leading-7 text-white/75">
+        Thoughtfully selected properties, clear guidance, and a team that listens before it
+        recommends.
+      </p>
+      <div
+        class="mt-12 max-w-3xl rounded-2xl bg-white p-2 text-[#20242c] shadow-2xl shadow-black/20 sm:flex sm:items-center justify-between dark:bg-[#181c20] dark:text-white"
+      >
+        <div class="flex flex-1 items-center gap-3 px-4 py-3 w-full">
+          <span class="text-[#789085]">⌕</span
+          ><input
+            class="w-full bg-transparent text-sm outline-none placeholder:text-gray-400 dark:placeholder:text-gray-500"
+            [(ngModel)]="searchTerms"
+            placeholder="Search by city or property"
+          />
+        </div>
+        <button
+          (click)="onSearchPropert()"
+          class="rounded-lg bg-[#263b31] px-7 py-3 text-sm font-semibold text-white transition hover:bg-[#3b5748]"
+        >
+          Search property
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Shortlist properties -->
+  @if (loading()) {
+    <app-loading />
+  } @else {
+    @if (featuredProperties().length > 0) {
+      <section class="mx-auto max-w-7xl px-5 py-20 lg:px-8">
+        <div class="flex flex-col justify-between gap-5 sm:flex-row sm:items-end">
+          <div>
+            <p class="text-xs font-bold uppercase tracking-[0.2em] text-[#789085]">The shortlist</p>
+            <h2 class="mt-3 text-xl font-semibold tracking-[-0.04em] dark:text-white md:text-3xl">
+              Places worth a closer look.
+            </h2>
+          </div>
+          <a
+            routerLink="/properties"
+            class="text-sm font-semibold underline decoration-[#d7ef61] decoration-4 underline-offset-4"
+            >View all properties →</a
+          >
+        </div>
+        <div class="mt-10 grid gap-6 md:grid-cols-3">
+          @for (property of featuredProperties(); track property.id) {
+            <app-propert-card [property]="property" />
+          }
+        </div>
+      </section>
+    }
+  }
+
+  <section class="bg-[#eaf0e8] px-5 py-20 transition-colors dark:bg-[#181c20] lg:px-8">
+    <div class="mx-auto grid max-w-7xl gap-12 md:grid-cols-2 md:items-center">
+      <div>
+        <p class="text-xs font-bold uppercase tracking-[0.2em] text-[#789085]">Why refine</p>
+        <h2
+          class="mt-4 max-w-lg text-4xl font-semibold leading-tight tracking-tighter dark:text-white"
+        >
+          The right home changes the rhythm of every day.
+        </h2>
+        <p class="mt-5 max-w-md leading-7 text-[#53635b] dark:text-gray-400">
+          We pair human advice with a sharper view of the market, so your next move feels clear,
+          considered, and entirely yours.
+        </p>
+        <a
+          routerLink="/about"
+          class="mt-8 inline-block rounded-full bg-[#263b31] px-6 py-3 text-sm font-semibold text-white"
+          >Meet our team</a
+        >
+      </div>
+      <div class="grid grid-cols-2 gap-3">
+        <div class="rounded-2xl bg-[#263b31] p-6 text-white dark:bg-[#101214]">
+          <strong class="text-4xl font-semibold">12k</strong>
+          <p class="mt-10 text-sm text-white/60">properties found for happy clients</p>
+        </div>
+        <div class="mt-8 rounded-2xl bg-[#d7ef61] p-6 text-[#263b31]">
+          <strong class="text-4xl font-semibold">4.9</strong>
+          <p class="mt-10 text-sm text-[#52633a]">average client rating</p>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>

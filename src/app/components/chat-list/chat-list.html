@@ -1,0 +1,304 @@
+<div class="relative h-full overflow-hidden bg-white dark:bg-[#17191c]">
+  <!-- ================ -->
+  <!-- MAIN CHAT LIST -->
+  <!-- ================ -->
+
+  <div class="flex h-full flex-col">
+    <!-- ============ -->
+    <!-- HEADER -->
+    <!-- ============ -->
+
+    <div
+      class="flex items-center justify-between border-b border-gray-200 px-4 py-4 dark:border-gray-800"
+    >
+      <div>
+        <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Chats</h2>
+
+        <p class="mt-0.5 text-xs text-gray-400">Your conversations</p>
+      </div>
+
+      <!-- NEW CHAT BUTTON -->
+
+      <button
+        type="button"
+        (click)="openNewChat()"
+        title="New chat"
+        class="flex h-9 w-9 items-center justify-center rounded-full bg-[#4f5bea] text-xl text-white shadow-sm transition hover:bg-[#414bd0] hover:shadow-md"
+      >
+        +
+      </button>
+    </div>
+
+    <!-- ========== -->
+    <!-- SEARCH EXISTING CHATS -->
+    <!-- ========== -->
+
+    <div class="px-4 py-3">
+      <div class="flex items-center gap-2 rounded-xl bg-gray-100 px-3 dark:bg-[#22262b]">
+        <svg class="h-4 w-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path
+            d="m21 21-4.35-4.35m2.35-5.65a8 8 0 11-16 0 8 8 0 0116 0Z"
+            stroke-width="1.5"
+            stroke-linecap="round"
+          />
+        </svg>
+
+        <input
+          type="text"
+          placeholder="Search chats"
+          class="w-full border-none bg-transparent py-2.5 text-sm outline-none placeholder:text-gray-400 dark:text-white"
+        />
+      </div>
+    </div>
+
+    <!-- =========== -->
+    <!-- CONVERSATIONS -->
+    <!-- =========== -->
+
+    <div class="flex-1 overflow-y-auto">
+      @if (conversations().length) {
+        @for (conversation of conversations(); track conversation.id) {
+          @let otherUser = getOtherUser(conversation);
+
+          <button
+            type="button"
+            (click)="conversationSelected.emit(conversation)"
+            class="flex w-full items-center gap-3 border-b border-gray-100 px-4 py-3 text-left transition hover:bg-gray-50 dark:border-gray-800 dark:hover:bg-[#202428]"
+          >
+            <!-- Avatar -->
+            @if (otherUser.photo) {
+              <img
+                [src]="otherUser?.photo"
+                [alt]="otherUser?.name"
+                class="h-11 w-11 shrink-0 rounded-full object-cover"
+              />
+            } @else {
+              <div
+                class="ml-1 h-11 w-11 overflow-hidden rounded-full border-2 border-white bg-gray-100 dark:bg-gray-600 shadow-md dark:border-[#181b1e] flex items-center justify-center text-black dark:text-white"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="h-5 w-5"
+                  fill="currentColor"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="1.5"
+                    d="M15 19a4 4 0 00-8 0m4-7a3 3 0 100-6 3 3 0 000 6zm6 7a4 4 0 00-3-3.87"
+                  />
+                </svg>
+              </div>
+            }
+
+            <!-- Content -->
+
+            <div class="min-w-0 flex-1">
+              <div class="flex items-center justify-between gap-2">
+                <h3 class="truncate text-sm font-medium text-gray-900 dark:text-white">
+                  {{ otherUser?.name }}
+                </h3>
+
+                @if (conversation.lastMessageAt) {
+                  <span class="shrink-0 text-[8px] text-gray-400">
+                    {{ conversation.lastMessageAt | date: 'M/d/yy, h:mm' }}
+                  </span>
+                }
+              </div>
+
+              <div class="mt-1 flex items-center justify-between gap-2">
+                <p class="truncate text-xs text-gray-500 dark:text-gray-400">
+                  @if (conversation.lastMessage?.content) {
+                    {{ conversation.lastMessage?.sender === currentUserId() ? 'You: ' : '' }}
+                  }
+
+                  {{ conversation.lastMessage?.content || 'No messages yet' }}
+                </p>
+
+                @if (conversation.unreadCount > 0) {
+                  <span
+                    class="flex h-5 min-w-5 shrink-0 items-center justify-center rounded-full bg-[#4f5bea] px-1.5 text-[10px] font-semibold text-white"
+                  >
+                    {{ conversation.unreadCount }}
+                  </span>
+                }
+              </div>
+            </div>
+          </button>
+        }
+      } @else {
+        <div class="flex h-48 flex-col items-center justify-center px-6 text-center">
+          <div
+            class="mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-gray-100 text-xl dark:bg-gray-800"
+          >
+            💬
+          </div>
+
+          <p class="text-sm font-medium text-gray-700 dark:text-gray-200">No conversations yet</p>
+
+          <p class="mt-1 text-xs text-gray-400">Start a new chat to begin</p>
+        </div>
+      }
+    </div>
+  </div>
+
+  <!-- =============== -->
+  <!-- BACKDROP -->
+  <!-- =============== -->
+
+  @if (showNewChat()) {
+    <div
+      class="absolute inset-0 z-30 bg-black/30 backdrop-blur-[1px]"
+      (click)="closeNewChat()"
+    ></div>
+  }
+
+  <!-- =========== -->
+  <!-- NEW CHAT SLIDE PANEL -->
+  <!-- =========== -->
+
+  <div
+    class="absolute bottom-0 right-0 left-0 top-0 z-40 w-80 max-w-90 border-l border-gray-200 bg-white shadow-2xl transition-transform duration-300 ease-out dark:border-gray-800 dark:bg-[#181c20] -translate-x-100"
+    [class.-translate-x-100]="!showNewChat()"
+    [class.translate-x-0]="showNewChat()"
+  >
+    <!-- ================ -->
+    <!-- NEW CHAT HEADER -->
+    <!-- ================ -->
+
+    <div class="flex items-center gap-3 border-b border-gray-200 px-4 py-4 dark:border-gray-800">
+      <!-- Close -->
+
+      <button
+        type="button"
+        (click)="closeNewChat()"
+        class="flex h-8 w-8 items-center justify-center rounded-full text-gray-500 transition hover:bg-gray-100 hover:text-gray-900 dark:hover:bg-gray-800 dark:hover:text-white"
+      >
+        <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path
+            d="m15 18-6-6 6-6"
+            stroke-width="1.8"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+        </svg>
+      </button>
+
+      <div>
+        <h2 class="text-base font-semibold text-gray-900 dark:text-white">New Chat</h2>
+
+        <p class="mt-0.5 text-[10px] text-gray-400">Select a user to start chatting</p>
+      </div>
+    </div>
+
+    <!-- ============== -->
+    <!-- USER SEARCH -->
+    <!-- ============== -->
+
+    <div class="border-b border-gray-100 p-3 dark:border-gray-800">
+      <div class="flex items-center gap-2 rounded-xl bg-gray-100 px-3 dark:bg-[#22262b]">
+        <svg
+          class="h-4 w-4 shrink-0 text-gray-400"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <path
+            d="m21 21-4.35-4.35m2.35-5.65a8 8 0 11-16 0 8 8 0 0116 0Z"
+            stroke-width="1.5"
+            stroke-linecap="round"
+          />
+        </svg>
+
+        <input
+          type="text"
+          placeholder="Search people..."
+          [ngModel]="searchTerm()"
+          (ngModelChange)="searchTerm.set($event)"
+          class="w-full border-none bg-transparent py-2.5 text-sm outline-none placeholder:text-gray-400 dark:text-white"
+        />
+      </div>
+    </div>
+
+    <!-- ============ -->
+    <!-- USERS -->
+    <!-- ============ -->
+
+    <div class="h-[calc(100%-130px)] overflow-y-auto">
+      @if (isLoadingUsers()) {
+        <div class="flex items-center justify-center py-10">
+          <div
+            class="h-6 w-6 animate-spin rounded-full border-2 border-gray-200 border-t-[#4f5bea]"
+          ></div>
+        </div>
+      } @else {
+        @if (filteredUsers().length) {
+          @for (
+            user of filteredUsers().filter(
+              (u) => u.role !== 'customer' && u.id !== currentUserId()
+            );
+            track user.id
+          ) {
+            <button
+              type="button"
+              (click)="startChat(user)"
+              [disabled]="isCreatingConversation()"
+              class="flex w-full items-center gap-3 border-b border-gray-100 px-4 py-3 text-left transition hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50 dark:border-gray-800 dark:hover:bg-[#202428]"
+            >
+              <!-- Avatar -->
+              @if (user.photo) {
+                <img
+                  [src]="user.photo"
+                  [alt]="user.name"
+                  class="h-11 w-11 shrink-0 rounded-full object-cover"
+                />
+              } @else {
+                <div
+                  class="ml-1 h-11 w-11 overflow-hidden rounded-full border-2 border-white bg-gray-100 shadow-md dark:border-[#181b1e] flex items-center justify-center"
+                >
+                  <span class="text-lg font-bold"
+                    >{{ user?.name.split(' ')[0][0] }}{{ user.name.split(' ')[1][0] }}</span
+                  >
+                </div>
+              }
+
+              <!-- User details -->
+
+              <div class="min-w-0 flex-1">
+                <h3 class="truncate text-sm font-medium text-gray-900 dark:text-white">
+                  {{ user.name }}
+                </h3>
+
+                <p class="mt-0.5 truncate text-xs text-gray-400">
+                  {{ user.email }}
+                </p>
+              </div>
+
+              <!-- Arrow -->
+
+              <svg
+                class="h-4 w-4 text-gray-400"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  d="m9 18 6-6-6-6"
+                  stroke-width="1.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </svg>
+            </button>
+          }
+        } @else {
+          <div class="px-6 py-12 text-center">
+            <p class="text-sm text-gray-500 dark:text-gray-400">No users found</p>
+          </div>
+        }
+      }
+    </div>
+  </div>
+</div>

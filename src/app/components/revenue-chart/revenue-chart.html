@@ -1,0 +1,22 @@
+<div
+  class="rounded-xl border border-gray-200 bg-white p-5 text-gray-900 [--chart-grid:#eef0f2] [--chart-text:#6b7280] dark:border-gray-800 dark:bg-[#181c20] dark:text-white dark:[--chart-grid:#30363d] dark:[--chart-text:#ffffff]"
+>
+  <div class="mb-5 flex items-center justify-between">
+    <div>
+      <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Revenue Overview</h2>
+
+      <p class="text-xs text-gray-400">Revenue generated from property sales</p>
+    </div>
+  </div>
+
+  <apx-chart
+    [series]="chartOptions.series!"
+    [chart]="chartOptions.chart!"
+    [colors]="chartOptions.colors!"
+    [xaxis]="chartOptions.xaxis!"
+    [yaxis]="chartOptions.yaxis!"
+    [tooltip]="chartOptions.tooltip!"
+    [grid]="chartOptions.grid!"
+    [dataLabels]="chartOptions.dataLabels!"
+  ></apx-chart>
+</div>

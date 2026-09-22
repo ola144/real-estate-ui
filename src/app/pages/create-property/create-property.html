@@ -1,0 +1,604 @@
+<div class="min-h-[calc(100vh-64px)] bg-[#f7f8fa] p-4 sm:p-6 dark:bg-[#101214] lg:ml-55">
+  <div class="mx-auto max-w-7xl">
+    @if (loading()) {
+      <app-loading />
+    } @else {
+      <!-- ======= -->
+      <!-- HEADER -->
+      <!-- ======= -->
+
+      <div class="mb-6 flex items-center justify-between">
+        <div>
+          <h1 class="md:text-2xl text-xl font-semibold text-gray-900 dark:text-white">
+            {{ propertyId() ? 'Update' : 'Add' }} Property
+          </h1>
+
+          <p class="text-xs text-gray-400">
+            {{
+              propertyId()
+                ? 'Update the existing property of your listings'
+                : 'Add a new property to your listings.'
+            }}
+          </p>
+        </div>
+
+        <button
+          type="button"
+          (click)="cancel()"
+          class="rounded-lg border border-gray-200 bg-white px-4 py-2 text-sm font-medium text-gray-600 transition hover:bg-gray-50 dark:border-gray-700 dark:bg-[#181c20] dark:text-gray-300 dark:hover:bg-gray-800"
+        >
+          Back to Properties
+        </button>
+      </div>
+
+      <!-- ======= -->
+      <!-- FORM -->
+      <!-- ======= -->
+
+      <form class="mx-auto max-w-7xl">
+        <div
+          class="overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-[#181c20]"
+        >
+          <!-- ======= -->
+          <!-- FORM HEADER -->
+          <!-- ======= -->
+
+          <div class="border-b border-gray-100 px-5 py-4 dark:border-gray-800">
+            <h2 class="text-lg font-semibold text-gray-900 dark:text-white">
+              Property Information
+            </h2>
+
+            <p class="text-xs text-gray-400">Enter the basic information about the property.</p>
+          </div>
+
+          <!-- ======= -->
+          <!-- BODY -->
+          <!-- ======= -->
+
+          <div class="p-5">
+            <div class="grid grid-cols-1 gap-5 md:grid-cols-2">
+              <!-- =======-->
+              <!-- TITLE -->
+              <!-- =======-->
+
+              <div class="md:col-span-2">
+                <label class="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">
+                  Property Title
+
+                  <span class="text-red-500">*</span>
+                </label>
+
+                <input
+                  type="text"
+                  [formField]="propertyForm.title"
+                  placeholder="e.g. Luxury 4 Bedroom Duplex"
+                  class="h-10 w-full rounded-lg border border-gray-200 bg-white px-3 text-sm text-gray-800 outline-none transition placeholder:text-gray-400 focus:border-[#4f5bea] focus:ring-2 focus:ring-[#4f5bea]/10 dark:border-gray-700 dark:bg-[#202428] dark:text-white"
+                />
+
+                @if (propertyForm.title().touched() && propertyForm.title().invalid()) {
+                  <div class="mt-1">
+                    @for (error of propertyForm.title().errors(); track error.kind) {
+                      <p class="text-[10px] text-red-500">
+                        {{ error.message }}
+                      </p>
+                    }
+                  </div>
+                }
+              </div>
+
+              <!-- =======-->
+              <!-- PRICE -->
+              <!-- =======-->
+
+              <div [class]="propertyId() ? '' : 'md:col-span-2'">
+                <label class="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">
+                  Price
+
+                  <span class="text-red-500">*</span>
+                </label>
+
+                <div class="relative">
+                  <span class="absolute left-3 top-1/2 -translate-y-1/2 text-xs text-gray-400">
+                    ₦
+                  </span>
+
+                  <input
+                    type="text"
+                    [formField]="propertyForm.price"
+                    placeholder="25,000,000"
+                    class="h-10 w-full rounded-lg border border-gray-200 bg-white pl-7 pr-3 text-sm text-gray-800 outline-none focus:border-[#4f5bea] dark:border-gray-700 dark:bg-[#202428] dark:text-white"
+                  />
+                </div>
+
+                @if (propertyForm.price().touched() && propertyForm.price().invalid()) {
+                  @for (error of propertyForm.price().errors(); track error.kind) {
+                    <p class="mt-1 text-[10px] text-red-500">
+                      {{ error.message }}
+                    </p>
+                  }
+                }
+              </div>
+
+              <!-- =======-->
+              <!-- PROPERTY STATUS -->
+              <!-- =======-->
+              @if (propertyId() !== undefined) {
+                <div>
+                  <label class="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">
+                    Property Status
+
+                    <span class="text-red-500">*</span>
+                  </label>
+
+                  <select
+                    [formField]="propertyForm.status"
+                    class="h-10 w-full rounded-lg border border-gray-200 bg-white px-3 text-sm text-gray-700 outline-none focus:border-[#4f5bea] dark:border-gray-700 dark:bg-[#202428] dark:text-gray-300 capitalize"
+                  >
+                    @for (status of ['available', 'rented', 'sold']; track status) {
+                      <option [value]="status">{{ status }}</option>
+                    }
+                  </select>
+
+                  @if (propertyForm.status().touched() && propertyForm.status().invalid()) {
+                    @for (error of propertyForm.status().errors(); track error.kind) {
+                      <p class="mt-1 text-[10px] text-red-500">
+                        {{ error.message }}
+                      </p>
+                    }
+                  }
+                </div>
+              }
+
+              <!-- =======-->
+              <!-- PROPERTY TYPE -->
+              <!-- =======-->
+
+              <div>
+                <label class="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">
+                  Property Type
+
+                  <span class="text-red-500">*</span>
+                </label>
+
+                <select
+                  [formField]="propertyForm.propertyType"
+                  class="h-10 w-full rounded-lg border border-gray-200 bg-white px-3 text-sm text-gray-700 outline-none focus:border-[#4f5bea] dark:border-gray-700 dark:bg-[#202428] dark:text-gray-300"
+                >
+                  <option value="">Select property type</option>
+
+                  @for (type of propertyTypes; track type) {
+                    <option [value]="type">
+                      {{ type }}
+                    </option>
+                  }
+                </select>
+
+                @if (
+                  propertyForm.propertyType().touched() && propertyForm.propertyType().invalid()
+                ) {
+                  @for (error of propertyForm.propertyType().errors(); track error.kind) {
+                    <p class="mt-1 text-[10px] text-red-500">
+                      {{ error.message }}
+                    </p>
+                  }
+                }
+              </div>
+
+              <!-- =======-->
+              <!-- LISTING TYPE -->
+              <!-- =======-->
+
+              <div>
+                <label class="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">
+                  Listing Type
+
+                  <span class="text-red-500">*</span>
+                </label>
+
+                <select
+                  [formField]="propertyForm.listingType"
+                  class="h-10 w-full rounded-lg border border-gray-200 bg-white px-3 text-sm text-gray-700 outline-none focus:border-[#4f5bea] dark:border-gray-700 dark:bg-[#202428] dark:text-gray-300"
+                >
+                  <option value="">Select listing type</option>
+
+                  @for (type of ['sale', 'rent']; track type) {
+                    <option [value]="type">For {{ type }}</option>
+                  }
+                </select>
+
+                @if (propertyForm.listingType().touched() && propertyForm.listingType().invalid()) {
+                  @for (error of propertyForm.listingType().errors(); track error.kind) {
+                    <p class="mt-1 text-[10px] text-red-500">
+                      {{ error.message }}
+                    </p>
+                  }
+                }
+              </div>
+
+              <!-- COUNTRY & STATE -->
+              <div class="grid md:grid-cols-2 gap-3 md:col-span-2">
+                <div class="">
+                  <label class="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">
+                    Country
+
+                    <span class="text-red-500">*</span>
+                  </label>
+
+                  <select
+                    type="text"
+                    name="country"
+                    required
+                    (change)="onChangeCountry($event)"
+                    placeholder="e.g. Lekki Phase 1, Lagos, Nigeria"
+                    class="h-10 w-full rounded-lg border border-gray-200 bg-white px-3 text-sm text-gray-800 outline-none focus:border-[#4f5bea] dark:border-gray-700 dark:bg-[#202428] dark:text-white"
+                  >
+                    <option value="">Select country</option>
+
+                    @for (country of countries(); track country.name) {
+                      <option [value]="country.code">
+                        {{ country.name }}
+                      </option>
+                    }
+                  </select>
+
+                  <!-- @if (propertyForm.city().touched() && propertyForm.city().invalid()) {
+                  @for (error of propertyForm.city().errors(); track error.kind) {
+                    <p class="mt-1 text-[10px] text-red-500">
+                      {{ error.message }}
+                    </p>
+                  }
+                } -->
+                </div>
+
+                <div class="">
+                  <label class="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">
+                    State
+
+                    <span class="text-red-500">*</span>
+                  </label>
+
+                  <select
+                    type="text"
+                    name="state"
+                    required
+                    (change)="onChangeState($event)"
+                    placeholder="e.g. Lekki Phase 1, Lagos, Nigeria"
+                    class="h-10 w-full rounded-lg border border-gray-200 bg-white px-3 text-sm text-gray-800 outline-none focus:border-[#4f5bea] dark:border-gray-700 dark:bg-[#202428] dark:text-white"
+                  >
+                    <option value="" selected>Select state</option>
+
+                    @for (state of states(); track state.name) {
+                      <option [value]="state.code">
+                        {{ state.name }}
+                      </option>
+                    }
+                  </select>
+
+                  <!-- @if (propertyForm.city().touched() && propertyForm.city().invalid()) {
+                  @for (error of propertyForm.city().errors(); track error.kind) {
+                    <p class="mt-1 text-[10px] text-red-500">
+                      {{ error.message }}
+                    </p>
+                  }
+                } -->
+                </div>
+              </div>
+
+              <!-- =======-->
+              <!-- CITY -->
+              <!-- =======-->
+
+              <div class="grid md:grid-cols-2 gap-3 md:col-span-2">
+                <div class="">
+                  <label class="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">
+                    City
+
+                    <span class="text-red-500">*</span>
+                  </label>
+
+                  <input
+                    type="text"
+                    [formField]="propertyForm.city"
+                    placeholder="e.g. Lekki Phase 1"
+                    class="h-10 w-full rounded-lg border border-gray-200 bg-white px-3 text-sm text-gray-800 outline-none focus:border-[#4f5bea] dark:border-gray-700 dark:bg-[#202428] dark:text-white"
+                  />
+
+                  @if (propertyForm.city().touched() && propertyForm.city().invalid()) {
+                    @for (error of propertyForm.city().errors(); track error.kind) {
+                      <p class="mt-1 text-[10px] text-red-500">
+                        {{ error.message }}
+                      </p>
+                    }
+                  }
+                </div>
+                <div class="">
+                  <label class="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">
+                    Street Address
+
+                    <span class="text-red-500">*</span>
+                  </label>
+
+                  <input
+                    type="text"
+                    [formField]="propertyForm.streetAddress"
+                    placeholder="e.g. Lekki Phase 1"
+                    class="h-10 w-full rounded-lg border border-gray-200 bg-white px-3 text-sm text-gray-800 outline-none focus:border-[#4f5bea] dark:border-gray-700 dark:bg-[#202428] dark:text-white"
+                  />
+
+                  @if (
+                    propertyForm.streetAddress().touched() && propertyForm.streetAddress().invalid()
+                  ) {
+                    @for (error of propertyForm.streetAddress().errors(); track error.kind) {
+                      <p class="mt-1 text-[10px] text-red-500">
+                        {{ error.message }}
+                      </p>
+                    }
+                  }
+                </div>
+              </div>
+
+              <!-- BED, BATHS, AREAS -->
+              <div class="grid md:grid-cols-3 sm:grid-cols-2 gap-3 md:col-span-2">
+                <div>
+                  <label class="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">
+                    Baths
+
+                    <span class="text-red-500">*</span>
+                  </label>
+
+                  <div class="relative">
+                    <input
+                      type="number"
+                      [formField]="propertyForm.baths"
+                      placeholder="5"
+                      class="h-10 w-full rounded-lg border border-gray-200 bg-white pl-7 pr-3 text-sm text-gray-800 outline-none focus:border-[#4f5bea] dark:border-gray-700 dark:bg-[#202428] dark:text-white"
+                    />
+                  </div>
+
+                  @if (propertyForm.baths().touched() && propertyForm.baths().invalid()) {
+                    @for (error of propertyForm.baths().errors(); track error.kind) {
+                      <p class="mt-1 text-[10px] text-red-500">
+                        {{ error.message }}
+                      </p>
+                    }
+                  }
+                </div>
+                <div>
+                  <label class="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">
+                    Beds
+
+                    <span class="text-red-500">*</span>
+                  </label>
+
+                  <div class="relative">
+                    <input
+                      type="number"
+                      [formField]="propertyForm.beds"
+                      placeholder="20"
+                      class="h-10 w-full rounded-lg border border-gray-200 bg-white pl-7 pr-3 text-sm text-gray-800 outline-none focus:border-[#4f5bea] dark:border-gray-700 dark:bg-[#202428] dark:text-white"
+                    />
+                  </div>
+
+                  @if (propertyForm.beds().touched() && propertyForm.beds().invalid()) {
+                    @for (error of propertyForm.beds().errors(); track error.kind) {
+                      <p class="mt-1 text-[10px] text-red-500">
+                        {{ error.message }}
+                      </p>
+                    }
+                  }
+                </div>
+                <div>
+                  <label class="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">
+                    Area (sqft)
+
+                    <span class="text-red-500">*</span>
+                  </label>
+
+                  <div class="relative">
+                    <input
+                      type="number"
+                      [formField]="propertyForm.area"
+                      placeholder="1400"
+                      class="h-10 w-full rounded-lg border border-gray-200 bg-white pl-7 pr-3 text-sm text-gray-800 outline-none focus:border-[#4f5bea] dark:border-gray-700 dark:bg-[#202428] dark:text-white"
+                    />
+                  </div>
+
+                  @if (propertyForm.area().touched() && propertyForm.area().invalid()) {
+                    @for (error of propertyForm.area().errors(); track error.kind) {
+                      <p class="mt-1 text-[10px] text-red-500">
+                        {{ error.message }}
+                      </p>
+                    }
+                  }
+                </div>
+              </div>
+
+              <!-- =======-->
+              <!-- DESCRIPTION -->
+              <!-- =======-->
+
+              <div class="md:col-span-2">
+                <label class="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">
+                  Description
+
+                  <span class="text-red-500">*</span>
+                </label>
+
+                <textarea
+                  rows="6"
+                  [formField]="propertyForm.description"
+                  placeholder="
+                Describe the property, features, amenities,
+                neighborhood, etc.
+              "
+                  class="w-full resize-none rounded-lg border border-gray-200 bg-white p-3 text-sm leading-5 text-gray-800 outline-none placeholder:text-gray-400 focus:border-[#4f5bea] focus:ring-2 focus:ring-[#4f5bea]/10 dark:border-gray-700 dark:bg-[#202428] dark:text-white"
+                ></textarea>
+
+                @if (propertyForm.description().touched() && propertyForm.description().invalid()) {
+                  @for (error of propertyForm.description().errors(); track error.kind) {
+                    <p class="mt-1 text-[10px] text-red-500">
+                      {{ error.message }}
+                    </p>
+                  }
+                }
+              </div>
+
+              <!-- FACILITIES -->
+              <div class="md:col-span-2">
+                <label class="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">
+                  Facilities
+
+                  <span class="text-red-500">*</span>
+                </label>
+
+                <div class="flex flex-wrap gap-2">
+                  @for (facility of facilites(); track facility) {
+                    <label
+                      class="flex items-center gap-2 rounded-lg border border-gray-200 bg-white px-3 py-1 text-sm text-gray-800 transition hover:bg-[#4f5bea]/10 dark:border-gray-700 dark:bg-[#202428] dark:text-white"
+                    >
+                      <input
+                        type="checkbox"
+                        [value]="facility"
+                        (change)="onChangeFacilities(facility)"
+                        [checked]="selectedFacilities().includes(facility)"
+                        class="h-4 w-4 rounded border-gray-300 text-[#4f5bea] focus:ring-[#4f5bea]"
+                      />
+                      {{ facility }}
+                    </label>
+                  }
+                </div>
+              </div>
+
+              <!-- =======-->
+              <!-- PHOTO -->
+              <!-- =======-->
+
+              <div class="md:col-span-2">
+                <label class="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">
+                  Property Pictures
+
+                  <span class="text-red-500">*</span>
+                </label>
+
+                <!-- Upload Area -->
+                <label
+                  for="property-photo"
+                  class="flex min-h-50 cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-dashed border-gray-200 bg-gray-50 transition hover:border-[#4f5bea] hover:bg-[#4f5bea]/5 dark:border-gray-700 dark:bg-[#202428] dark:hover:border-[#4f5bea]"
+                >
+                  <div
+                    class="mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-[#4f5bea]/10 text-[#4f5bea]"
+                  >
+                    <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path
+                        d="M12 16V4m0 0L7 9m5-5 5 5"
+                        stroke-width="1.5"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      />
+
+                      <path d="M5 20h14" stroke-width="1.5" stroke-linecap="round" />
+                    </svg>
+                  </div>
+
+                  <p class="text-sm font-medium text-gray-700 dark:text-gray-300">
+                    Click to upload property images
+                  </p>
+
+                  <p class="mt-1 text-xs text-gray-400">PNG, JPG or WEBP</p>
+
+                  <input
+                    id="property-photo"
+                    type="file"
+                    multiple
+                    accept="image/png,image/jpeg,image/webp"
+                    class="hidden"
+                    (change)="handleInputChange($event)"
+                  />
+                </label>
+
+                <!-- Preview -->
+                @if (imagePreview().length) {
+                  <div
+                    class="relative h-fit overflow-hidden rounded-xl bg-gray-100 dark:bg-gray-800 p-2"
+                  >
+                    <div class="flex flex-wrap w-full gap-2">
+                      @for (item of imagePreview(); track $index) {
+                        <div
+                          class="relative h-20 w-20 overflow-hidden rounded-xl bg-gray-100 dark:bg-gray-800 group r"
+                        >
+                          <img [src]="item" alt="Property Image Preview" class="h-20 w-20" />
+                          <button
+                            type="button"
+                            (click)="removeImage($index)"
+                            class="absolute right-0 top-0 flex h-6 w-6 items-center justify-center rounded-full bg-black/60 text-white backdrop-blur hover:bg-red-500 opacity-0 group-hover:opacity-100 transition-all duration-300"
+                          >
+                            <svg
+                              class="h-3 w-3"
+                              fill="none"
+                              viewBox="0 0 24 24"
+                              stroke="currentColor"
+                            >
+                              <path
+                                d="M6 6l12 12M18 6 6 18"
+                                stroke-width="2"
+                                stroke-linecap="round"
+                              />
+                            </svg>
+                          </button>
+                        </div>
+                      }
+                    </div>
+                  </div>
+                }
+                <!-- Photo validation -->
+                @if (propertyForm.photos().touched() && propertyForm.photos().invalid()) {
+                  @for (error of propertyForm.photos().errors(); track error.kind) {
+                    <p class="mt-1 text-[10px] text-red-500">
+                      {{ error.message }}
+                    </p>
+                  }
+                }
+              </div>
+            </div>
+          </div>
+
+          <!-- ======= -->
+          <!-- FOOTER -->
+          <!-- ======= -->
+
+          <div
+            class="flex items-center justify-end gap-3 border-t border-gray-100 px-5 py-4 dark:border-gray-800"
+          >
+            <button
+              type="button"
+              (click)="cancel()"
+              class="rounded-lg border border-gray-200 px-5 py-2.5 text-sm font-medium text-gray-600 transition hover:bg-gray-50 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-800"
+            >
+              Cancel
+            </button>
+
+            @if (propertyId()) {
+              <button
+                type="button"
+                [disabled]="propertyForm().invalid() || isSubmitting()"
+                (click)="onUpdate($event)"
+                class="rounded-lg bg-[#4f5bea] px-6 py-2.5 text-sm font-medium text-white transition hover:bg-[#414bd3] disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                {{ isSubmitting() ? 'Loading...' : 'Update Property' }}
+              </button>
+            } @else {
+              <button
+                type="button"
+                (click)="onCreate($event)"
+                [disabled]="propertyForm().invalid() || isSubmitting()"
+                class="rounded-lg bg-[#4f5bea] px-6 py-2.5 text-xs font-medium text-white transition hover:bg-[#414bd3] disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                {{ isSubmitting() ? 'Loading...' : 'Create Property' }}
+              </button>
+            }
+          </div>
+        </div>
+      </form>
+    }
+  </div>
+</div>

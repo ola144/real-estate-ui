@@ -1,0 +1,37 @@
+<div class="not-found-container">
+  <div class="not-found-content">
+    <div class="error-code">404</div>
+    <h1 class="error-title">Page Not Found</h1>
+    <p class="error-description">
+      Oops! We couldn't find the property or page you're looking for. It might have been removed,
+      moved, or the URL might be incorrect.
+    </p>
+
+    <div class="error-illustration">
+      <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+        <rect
+          x="40"
+          y="60"
+          width="120"
+          height="80"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          rx="8"
+        />
+        <line x1="60" y1="80" x2="140" y2="80" stroke="currentColor" stroke-width="2" />
+        <circle cx="70" cy="90" r="3" fill="currentColor" />
+        <circle cx="130" cy="90" r="3" fill="currentColor" />
+        <rect x="50" y="100" width="20" height="25" fill="currentColor" opacity="0.3" />
+        <rect x="130" y="100" width="20" height="25" fill="currentColor" opacity="0.3" />
+        <path d="M 100 140 Q 85 155 70 150" fill="none" stroke="currentColor" stroke-width="2" />
+      </svg>
+    </div>
+
+    <div class="button-group">
+      <button class="btn btn-primary" (click)="goBack()">
+        <span class="arrow">←</span> Go Back
+      </button>
+    </div>
+  </div>
+</div>

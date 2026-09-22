@@ -1,0 +1,933 @@
+@if (user?.role === 'admin') {
+  <div
+    class="lg:ml-55 min-h-screen text-[#20242c] transition-colors duration-300 dark:text-white"
+    [class.dark]="isDark()"
+  >
+    @if (isLoading()) {
+      <app-loading></app-loading>
+    } @else {
+      <!-- =====
+         PAGE CONTENT
+    ====== -->
+
+      <div class="p-4 sm:p-6 mx-auto max-w-7xl">
+        <!-- Title -->
+
+        <div class="mb-5">
+          <h1 class="text-2xl font-semibold uppercase">Dashboard</h1>
+        </div>
+
+        <!-- =====
+           STATS
+      ====== -->
+
+        <section class="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-4">
+          @for (stat of statList(); track stat?.title) {
+            <div
+              class="flex items-center justify-between rounded-lg border border-[#eceef1] bg-white p-4 dark:border-[#24282c] dark:bg-[#191c1f]"
+            >
+              <div>
+                <p class="text-xs uppercase text-gray-400">
+                  {{ stat?.title }}
+                </p>
+
+                <p class="mt-1 text-xl font-bold tracking-tight">
+                  {{ stat?.value }}
+                </p>
+              </div>
+
+              <!-- Donut -->
+
+              <div
+                class="relative h-11 w-11 rounded-full flex items-center justify-center"
+                [style.background]="getPercentage(stat.value ?? 0, stat.total ?? 0)"
+              >
+                <div class="absolute inset-1.5 rounded-full bg-white dark:bg-[#191c1f]"></div>
+                <span class="relative z-10 text-sm font-semibold text-[#5362e8]">
+                  {{ getNumberPercentage(stat.value ?? 0, stat.total ?? 0) }}%
+                </span>
+              </div>
+            </div>
+          }
+        </section>
+
+        <!-- =====
+           REVENUE + PROPERTY STATS
+      ====== -->
+
+        <section class="mt-4 grid grid-cols-1 gap-4 xl:grid-cols-[minmax(0,2fr)_minmax(260px,1fr)]">
+          <!-- Revenue -->
+
+          <div
+            class="rounded-lg border border-[#eceef1] bg-white p-4 dark:border-[#24282c] dark:bg-[#191c1f]"
+          >
+            <div class="flex items-start justify-between mb-3">
+              <div>
+                <p class="text-lg font-medium">Total Revenue</p>
+
+                <div class="mt-1 flex items-center gap-2">
+                  <span class="text-lg font-bold">
+                    {{ adminStatistics()?.revenue?.totalRevenue | currency: '₦' }}
+                  </span>
+
+                  <span
+                    class="rounded-full bg-[#eef1ff] px-1.5 py-0.5 text-sm font-medium text-[#5362e8] dark:bg-[#242842]"
+                  >
+                    +0.8%
+                  </span>
+                </div>
+              </div>
+
+              <!-- Legend -->
+
+              <!-- <div class="hidden items-center gap-4 sm:flex">
+              <div class="flex items-center gap-1">
+                <span class="h-1.5 w-1.5 rounded-full bg-[#5362e8]"></span>
+
+                <span class="text-sm text-gray-400"> Last Month </span>
+              </div>
+
+              <div class="flex items-center gap-1">
+                <span class="h-1.5 w-1.5 rounded-full bg-[#b7b1f5]"></span>
+
+                <span class="text-sm text-gray-400"> Running Month </span>
+              </div>
+            </div> -->
+            </div>
+
+            <!-- Chart -->
+
+            <app-revenue-chart
+              [categories]="adminStatistics()?.revenueChart?.categories"
+              [revenueData]="adminStatistics()?.revenueChart?.data"
+            />
+          </div>
+
+          <!-- Property Status -->
+
+          <div
+            class="rounded-lg border border-[#eceef1] bg-white p-4 dark:border-[#24282c] dark:bg-[#191c1f]"
+          >
+            <div class="flex items-center justify-between">
+              <div>
+                <h3 class="text-lg font-semibold">Property Status</h3>
+
+                <p class="text-xs text-gray-400">Current property distribution</p>
+              </div>
+            </div>
+
+            <div class="mt-5 space-y-4">
+              <!-- Available -->
+
+              <div>
+                <div class="mb-1 flex items-center justify-between">
+                  <span class="text-xs text-gray-500 dark:text-gray-400"> Available </span>
+
+                  <span class="text-xs">
+                    {{ adminStatistics()?.properties?.byStatus?.available ?? 0 }}
+                  </span>
+                </div>
+
+                <div class="h-1.5 overflow-hidden rounded-full bg-[#edf0f2] dark:bg-[#292d31]">
+                  <div
+                    class="h-full rounded-full bg-[#5362e8]"
+                    [style.width.%]="
+                      getNumberPercentage(
+                        adminStatistics()?.properties?.byStatus?.available ?? 0,
+                        adminStatistics()?.overview?.totalProperties ?? 0
+                      )
+                    "
+                  ></div>
+                </div>
+              </div>
+
+              <!-- Sold -->
+
+              <div>
+                <div class="mb-1 flex items-center justify-between">
+                  <span class="text-xs text-gray-500 dark:text-gray-400"> Sold </span>
+
+                  <span class="text-xs">
+                    {{ adminStatistics()?.properties?.byStatus?.sold ?? 0 }}
+                  </span>
+                </div>
+
+                <div class="h-1.5 overflow-hidden rounded-full bg-[#edf0f2] dark:bg-[#292d31]">
+                  <div
+                    class="h-full rounded-full bg-[#27c78a]"
+                    [style.width.%]="
+                      getNumberPercentage(
+                        adminStatistics()?.properties?.byStatus?.sold ?? 0,
+                        adminStatistics()?.overview?.totalProperties ?? 0
+                      )
+                    "
+                  ></div>
+                </div>
+              </div>
+
+              <!-- Rented -->
+
+              <div>
+                <div class="mb-1 flex items-center justify-between">
+                  <span class="text-xs text-gray-500 dark:text-gray-400"> Rented </span>
+
+                  <span class="text-xs">
+                    {{ adminStatistics()?.properties?.byStatus?.rented ?? 0 }}
+                  </span>
+                </div>
+
+                <div class="h-1.5 overflow-hidden rounded-full bg-[#edf0f2] dark:bg-[#292d31]">
+                  <div
+                    class="h-full rounded-full bg-[#f59e0b]"
+                    [style.width.%]="
+                      getNumberPercentage(
+                        adminStatistics()?.properties?.byStatus?.rented ?? 0,
+                        adminStatistics()?.overview?.totalProperties ?? 0
+                      )
+                    "
+                  ></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Property Types -->
+
+          <div
+            class="rounded-lg border border-[#eceef1] bg-white p-4 lg:col-span-2 dark:border-[#24282c] dark:bg-[#191c1f]"
+          >
+            <div class="flex items-center justify-between">
+              <div>
+                <h3 class="text-lg font-semibold">Property Types</h3>
+
+                <p class="text-xs text-gray-400">Your properties by type</p>
+              </div>
+            </div>
+
+            <div class="mt-5 grid grid-cols-2 gap-4 sm:grid-cols-3 xl:grid-cols-6">
+              @for (propertyType of adminPropertyTypes(); track propertyType.name) {
+                <div>
+                  <div class="flex items-center justify-between">
+                    <span class="truncate text-sm text-gray-400">
+                      {{ propertyType.name }}
+                    </span>
+
+                    <span class="text-xs font-semibold">
+                      {{ propertyType.count }}
+                    </span>
+                  </div>
+
+                  <div
+                    class="mt-2 h-1.5 overflow-hidden rounded-full bg-[#edf0f2] dark:bg-[#292d31]"
+                  >
+                    <div
+                      class="h-full rounded-full bg-[#5362e8]"
+                      [style.width.%]="propertyType.percentage"
+                    ></div>
+                  </div>
+                </div>
+              }
+            </div>
+          </div>
+        </section>
+
+        <!-- =====
+           AGENTS + CUSTOMERS
+      ====== -->
+
+        <section class="mt-4 grid grid-cols-1 gap-4 lg:grid-cols-3">
+          <!-- Top Agents -->
+
+          <div
+            class="rounded-lg border border-[#eceef1] bg-white p-4 dark:border-[#24282c] dark:bg-[#191c1f]"
+          >
+            <div class="flex items-center justify-between">
+              <h3 class="text-lg font-semibold">Top Agent</h3>
+
+              <button routerLink="/dashboard/agents" class="text-sm text-gray-400">View All</button>
+            </div>
+
+            <div class="mt-4 space-y-3">
+              @for (agent of adminStatistics()?.agents?.topAgents; track $index) {
+                <div class="flex items-center gap-2">
+                  @if (agent?.photo) {
+                    <img
+                      [src]="agent?.photo"
+                      [alt]="agent?.name"
+                      class="h-7 w-7 rounded-full object-cover"
+                    />
+                  } @else {
+                    <div
+                      class="ml-1 h-8 w-8 overflow-hidden rounded-full border-2 border-white bg-gray-100 dark:bg-gray-600 shadow-md dark:border-[#181b1e] flex items-center justify-center"
+                    >
+                      <span class="text-xs font-bold"
+                        >{{ agent?.name.split(' ')[0][0] }}{{ agent?.name.split(' ')[1][0] }}</span
+                      >
+                    </div>
+                  }
+
+                  <div class="min-w-0 flex-1">
+                    <p class="truncate text-sm font-medium">
+                      {{ agent?.name }}
+                    </p>
+
+                    <p class="text-xs text-gray-400">
+                      Total Properties:
+                      <span class="text-gray-700 font-bold">{{ agent?.totalProperties }}</span>
+                    </p>
+                  </div>
+
+                  <a
+                    [routerLink]="'/dashboard/agents/details/' + agent.agentId"
+                    class="text-gray-400 text-sm"
+                  >
+                    ⋮
+                  </a>
+                </div>
+              }
+            </div>
+          </div>
+
+          <!-- Customers -->
+
+          <div
+            class="rounded-lg border border-[#eceef1] bg-white p-4 dark:border-[#24282c] dark:bg-[#191c1f]"
+          >
+            <div class="flex items-center justify-between">
+              <h3 class="text-lg font-semibold">Customer</h3>
+
+              <button class="text-gray-400 text-sm">View All</button>
+            </div>
+
+            <div class="mt-4 grid grid-cols-2 gap-4">
+              <div>
+                <p class="text-sm text-gray-400">Total Customers</p>
+
+                <p class="text-xl font-bold">{{ adminStatistics()?.customers?.total }}</p>
+
+                <p class="text-xs font-medium text-[#27c78a]">↑ 21.7%</p>
+              </div>
+
+              <!-- Mini chart -->
+
+              <div class="flex h-14 items-end justify-end gap-1">
+                <div class="w-2 bg-[#54c5e5]" style="height: 45%"></div>
+
+                <div class="w-2 bg-[#54c5e5]" style="height: 70%"></div>
+
+                <div class="w-2 bg-[#8ed7e8]" style="height: 90%"></div>
+
+                <div class="w-2 bg-[#8ed7e8]" style="height: 65%"></div>
+
+                <div class="w-2 bg-[#8ed7e8]" style="height: 50%"></div>
+              </div>
+            </div>
+
+            <!-- <div class="mt-4 border-t border-gray-100 pt-3 dark:border-gray-700">
+              <p class="text-sm text-gray-400">New Customers This Month</p>
+
+              <div class="mt-1 flex items-center justify-between">
+                <div>
+                  <p class="text-lg font-bold">12k</p>
+
+                  <p class="text-sm font-medium text-[#27c78a]">↑ 21.7%</p>
+                </div>
+
+                <div class="flex h-10 items-end gap-1">
+                  <div class="w-2 bg-[#8d83e8]" style="height: 40%"></div>
+
+                  <div class="w-2 bg-[#8d83e8]" style="height: 60%"></div>
+
+                  <div class="w-2 bg-[#b9b4f5]" style="height: 90%"></div>
+
+                  <div class="w-2 bg-[#b9b4f5]" style="height: 65%"></div>
+                </div>
+              </div>
+            </div> -->
+          </div>
+
+          <!-- Latest Sales -->
+
+          <!-- <div
+          class="rounded-lg border border-[#eceef1] bg-white p-4 dark:border-[#24282c] dark:bg-[#191c1f]"
+        >
+          <div class="flex items-center justify-between">
+            <h3 class="text-sm font-semibold">Latest Sales</h3>
+
+            <button class="text-gray-400">→</button>
+          </div>
+
+          <div class="mt-3 space-y-3">
+            @for (sale of latestSales(); track $index) {
+              <div class="flex items-center gap-2">
+                <img
+                  [src]="sale.image"
+                  [alt]="sale.property"
+                  class="h-8 w-8 rounded-md object-cover"
+                />
+
+                <div class="min-w-0 flex-1">
+                  <p class="truncate text-sm font-medium">
+                    {{ sale.property }}
+                  </p>
+
+                  <p class="truncate text-[7px] text-gray-400">
+                    {{ sale.location }}
+                  </p>
+                </div>
+
+                <span class="text-sm font-medium text-[#5262eb]">
+                  {{ sale.price }}
+                </span>
+              </div>
+            }
+          </div>
+        </div> -->
+        </section>
+
+        <!-- =====
+           PROPERTY LIST
+      ====== -->
+
+        <section
+          class="mt-4 rounded-lg border border-[#eceef1] bg-white p-4 dark:border-[#24282c] dark:bg-[#191c1f]"
+        >
+          <!-- Header -->
+
+          <div class="flex flex-wrap items-center justify-between gap-3">
+            <h3 class="text-lg font-semibold">Recent Properties</h3>
+          </div>
+
+          <!-- Property cards -->
+
+          <div class="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-4">
+            @for (property of adminStatistics()?.recentProperties; track property?._id) {
+              <article class="group overflow-hidden rounded-md">
+                <!-- Image -->
+
+                <div class="relative h-36.25 overflow-hidden rounded-md bg-gray-100">
+                  <img
+                    [src]="property?.photo"
+                    [alt]="property?.title"
+                    class="h-full w-full object-cover transition duration-300 group-hover:scale-105"
+                  />
+
+                  <!-- Price -->
+
+                  <span
+                    class="absolute bottom-2 right-2 rounded bg-[#eef0ff] px-2 py-1 text-xs font-semibold text-[#5362e8]"
+                  >
+                    {{ property?.price | currency: '₦' }}
+                  </span>
+
+                  <a
+                    [routerLink]="'/dashboard/properties/details/' + property._id"
+                    class="bg-blue-500 w-fit rounded-lg py-2 px-4 text-xs text-white absolute top-1 right-1 hidden group-hover:block transition-all duration-300"
+                    >View</a
+                  >
+                </div>
+
+                <div class="flex items-center justify-between pt-2">
+                  <!-- Content -->
+
+                  <div class="">
+                    <h4 class="truncate text-sm font-medium">
+                      {{ property.title }}
+                    </h4>
+
+                    <div class="mt-1 flex items-center gap-1 text-xs text-gray-400">
+                      <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path
+                          stroke-width="1.8"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          d="M12 21s7-5.2 7-11a7 7 0 10-14 0c0 5.8 7 11 7 11z"
+                        />
+
+                        <circle cx="12" cy="10" r="2" stroke-width="1.8" />
+                      </svg>
+
+                      <span class="truncate">
+                        {{ property.location.address }}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </article>
+            }
+          </div>
+        </section>
+      </div>
+    }
+  </div>
+} @else {
+  <div
+    class="lg:ml-55 min-h-screen text-[#20242c] transition-colors duration-300 dark:text-white"
+    [class.dark]="isDark()"
+  >
+    @if (isLoading()) {
+      <app-loading></app-loading>
+    } @else {
+      <div class="mx-auto max-w-7xl p-4 sm:p-6">
+        <!-- =======
+         HEADER
+    ======== -->
+
+        <div class="mb-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <h1 class="md:text-2xl text-xl font-semibold tracking-tight">Agent Dashboard</h1>
+
+            <p class="text-sm text-gray-400">Overview of your properties, sales and revenue</p>
+          </div>
+
+          <button
+            type="button"
+            routerLink="/dashboard/properties/create"
+            class="rounded-lg bg-[#5362e8] px-4 py-2 text-sm font-medium text-white transition hover:bg-[#4352d8]"
+          >
+            + Add Property
+          </button>
+        </div>
+
+        <!-- =============
+         STATISTICS
+    ====== -->
+
+        <section class="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-4">
+          <!-- Total Properties -->
+
+          <div
+            class="flex items-center justify-between rounded-lg border border-[#eceef1] bg-white p-4 dark:border-[#24282c] dark:bg-[#191c1f]"
+          >
+            <div>
+              <p class="text-sm text-gray-400">Total Properties</p>
+
+              <p class="mt-1 text-xl font-bold tracking-tight">
+                {{ statistics()?.overview?.totalProperties ?? 0 }}
+              </p>
+
+              <p class="mt-1 text-sm text-gray-400">All your properties</p>
+            </div>
+
+            <div
+              class="relative flex h-11 w-11 items-center justify-center rounded-full"
+              [style.background]="'conic-gradient(#5362e8 100%, #edf0f3 0%)'"
+            >
+              <div class="absolute inset-1.5 rounded-full bg-white dark:bg-[#191c1f]"></div>
+
+              <span class="relative z-10 text-xs font-semibold text-[#5362e8]"> 100% </span>
+            </div>
+          </div>
+
+          <!-- Available -->
+
+          <div
+            class="flex items-center justify-between rounded-lg border border-[#eceef1] bg-white p-4 dark:border-[#24282c] dark:bg-[#191c1f]"
+          >
+            <div>
+              <p class="text-sm text-gray-400">Available</p>
+
+              <p class="mt-1 text-xl font-bold tracking-tight">
+                {{ statistics()?.overview?.availableProperties ?? 0 }}
+              </p>
+
+              <p class="mt-1 text-sm text-gray-400">Currently listed</p>
+            </div>
+
+            <div
+              class="relative flex h-11 w-11 items-center justify-center rounded-full"
+              [style.background]="
+                getPercentage(
+                  statistics()?.overview?.availableProperties ?? 0,
+                  statistics()?.overview?.totalProperties ?? 0
+                )
+              "
+            >
+              <div class="absolute inset-1.5 rounded-full bg-white dark:bg-[#191c1f]"></div>
+
+              <span class="relative z-10 text-[10px] font-semibold text-[#5362e8]">
+                {{
+                  getNumberPercentage(
+                    statistics()?.overview?.availableProperties ?? 0,
+                    statistics()?.overview?.totalProperties ?? 0
+                  )
+                }}%
+              </span>
+            </div>
+          </div>
+
+          <!-- Sold -->
+
+          <div
+            class="flex items-center justify-between rounded-lg border border-[#eceef1] bg-white p-4 dark:border-[#24282c] dark:bg-[#191c1f]"
+          >
+            <div>
+              <p class="text-sm text-gray-400">Sold</p>
+
+              <p class="mt-1 text-xl font-bold tracking-tight">
+                {{ statistics()?.overview?.soldProperties ?? 0 }}
+              </p>
+
+              <p class="mt-1 text-sm text-gray-400">Completed sales</p>
+            </div>
+
+            <div
+              class="relative flex h-11 w-11 items-center justify-center rounded-full"
+              [style.background]="
+                getPercentage(
+                  statistics()?.overview?.soldProperties ?? 0,
+                  statistics()?.overview?.totalProperties ?? 0
+                )
+              "
+            >
+              <div class="absolute inset-1.5 rounded-full bg-white dark:bg-[#191c1f]"></div>
+
+              <span class="relative z-10 text-[10px] font-semibold text-[#27c78a]">
+                {{
+                  getNumberPercentage(
+                    statistics()?.overview?.soldProperties ?? 0,
+                    statistics()?.overview?.totalProperties ?? 0
+                  )
+                }}%
+              </span>
+            </div>
+          </div>
+
+          <!-- Rented -->
+
+          <div
+            class="flex items-center justify-between rounded-lg border border-[#eceef1] bg-white p-4 dark:border-[#24282c] dark:bg-[#191c1f]"
+          >
+            <div>
+              <p class="text-sm text-gray-400">Rented</p>
+
+              <p class="mt-1 text-xl font-bold tracking-tight">
+                {{ statistics()?.overview?.rentedProperties ?? 0 }}
+              </p>
+
+              <p class="mt-1 text-sm text-gray-400">Rental properties</p>
+            </div>
+
+            <div
+              class="relative flex h-11 w-11 items-center justify-center rounded-full"
+              [style.background]="
+                getPercentage(
+                  statistics()?.overview?.rentedProperties ?? 0,
+                  statistics()?.overview?.totalProperties ?? 0
+                )
+              "
+            >
+              <div class="absolute inset-1.5 rounded-full bg-white dark:bg-[#191c1f]"></div>
+
+              <span class="relative z-10 text-[10px] font-semibold text-[#f59e0b]">
+                {{
+                  getNumberPercentage(
+                    statistics()?.overview?.rentedProperties ?? 0,
+                    statistics()?.overview?.totalProperties ?? 0
+                  )
+                }}%
+              </span>
+            </div>
+          </div>
+        </section>
+
+        <!-- =======
+         REVENUE + PROPERTY STATUS
+    ======== -->
+
+        <section class="mt-4 grid grid-cols-1 gap-4 xl:grid-cols-[minmax(0,2fr)_minmax(260px,1fr)]">
+          <!-- Revenue -->
+
+          <div
+            class="rounded-lg border border-[#eceef1] bg-white p-4 dark:border-[#24282c] dark:bg-[#191c1f]"
+          >
+            <div class="mb-3 flex items-start justify-between">
+              <div>
+                <p class="text-sm font-medium">Total Revenue</p>
+
+                <div class="mt-1 flex items-center gap-2">
+                  <span class="text-lg font-bold">
+                    ₦{{ statistics()?.revenue?.totalRevenue ?? 0 | number }}
+                  </span>
+
+                  <span
+                    class="rounded-full bg-[#eef1ff] px-1.5 py-0.5 text-sm font-medium text-[#5362e8] dark:bg-[#242842]"
+                  >
+                    Revenue
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            <app-revenue-chart
+              [categories]="statistics()?.revenueChart?.categories"
+              [revenueData]="statistics()?.revenueChart?.data"
+            />
+          </div>
+
+          <!-- Property Status -->
+
+          <div
+            class="rounded-lg border border-[#eceef1] bg-white p-4 dark:border-[#24282c] dark:bg-[#191c1f]"
+          >
+            <div class="flex items-center justify-between">
+              <div>
+                <h3 class="text-lg font-semibold">Property Status</h3>
+
+                <p class="text-[10px] text-gray-400">Current property distribution</p>
+              </div>
+            </div>
+
+            <div class="mt-5 space-y-4">
+              <!-- Available -->
+
+              <div>
+                <div class="mb-1 flex items-center justify-between">
+                  <span class="text-sm text-gray-500 dark:text-gray-400"> Available </span>
+
+                  <span class="text-sm">
+                    {{ statistics()?.properties?.byStatus?.available ?? 0 }}
+                  </span>
+                </div>
+
+                <div class="h-1.5 overflow-hidden rounded-full bg-[#edf0f2] dark:bg-[#292d31]">
+                  <div
+                    class="h-full rounded-full bg-[#5362e8]"
+                    [style.width.%]="
+                      getNumberPercentage(
+                        statistics()?.properties?.byStatus?.available ?? 0,
+                        statistics()?.overview?.totalProperties ?? 0
+                      )
+                    "
+                  ></div>
+                </div>
+              </div>
+
+              <!-- Sold -->
+
+              <div>
+                <div class="mb-1 flex items-center justify-between">
+                  <span class="text-sm text-gray-500 dark:text-gray-400"> Sold </span>
+
+                  <span class="text-sm">
+                    {{ statistics()?.properties?.byStatus?.sold ?? 0 }}
+                  </span>
+                </div>
+
+                <div class="h-1.5 overflow-hidden rounded-full bg-[#edf0f2] dark:bg-[#292d31]">
+                  <div
+                    class="h-full rounded-full bg-[#27c78a]"
+                    [style.width.%]="
+                      getNumberPercentage(
+                        statistics()?.properties?.byStatus?.sold ?? 0,
+                        statistics()?.overview?.totalProperties ?? 0
+                      )
+                    "
+                  ></div>
+                </div>
+              </div>
+
+              <!-- Rented -->
+
+              <div>
+                <div class="mb-1 flex items-center justify-between">
+                  <span class="text-sm text-gray-500 dark:text-gray-400"> Rented </span>
+
+                  <span class="text-sm">
+                    {{ statistics()?.properties?.byStatus?.rented ?? 0 }}
+                  </span>
+                </div>
+
+                <div class="h-1.5 overflow-hidden rounded-full bg-[#edf0f2] dark:bg-[#292d31]">
+                  <div
+                    class="h-full rounded-full bg-[#f59e0b]"
+                    [style.width.%]="
+                      getNumberPercentage(
+                        statistics()?.properties?.byStatus?.rented ?? 0,
+                        statistics()?.overview?.totalProperties ?? 0
+                      )
+                    "
+                  ></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ======
+         REVENUE SUMMARY + PROPERTY TYPES
+    ======= -->
+
+        <section class="mt-4 grid grid-cols-1 gap-4 lg:grid-cols-3">
+          <!-- Total Revenue -->
+
+          <div
+            class="rounded-lg border border-[#eceef1] bg-white p-4 dark:border-[#24282c] dark:bg-[#191c1f]"
+          >
+            <h3 class="text-lg font-semibold">Revenue Summary</h3>
+
+            <div class="mt-5 grid grid-cols-2 gap-4">
+              <div>
+                <p class="text-sm text-gray-400">Property Sales</p>
+
+                <p class="mt-1 text-xl font-bold">
+                  ₦{{ statistics()?.revenue?.soldRevenue ?? 0 | number }}
+                </p>
+
+                <p class="mt-1 text-sm font-medium text-[#27c78a]">Sales Revenue</p>
+              </div>
+
+              <div>
+                <p class="text-sm text-gray-400">Rental Revenue</p>
+
+                <p class="mt-1 text-xl font-bold">
+                  ₦{{ statistics()?.revenue?.rentalRevenue ?? 0 | number }}
+                </p>
+
+                <p class="mt-1 text-sm font-medium text-[#5362e8]">Rental Revenue</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Property Types -->
+
+          <div
+            class="rounded-lg border border-[#eceef1] bg-white p-4 lg:col-span-2 dark:border-[#24282c] dark:bg-[#191c1f]"
+          >
+            <div class="flex items-center justify-between">
+              <div>
+                <h3 class="text-lg font-semibold">Property Types</h3>
+
+                <p class="text-xs text-gray-400">Your properties by type</p>
+              </div>
+            </div>
+
+            <div class="mt-5 grid grid-cols-2 gap-4 sm:grid-cols-3 xl:grid-cols-6">
+              @for (propertyType of propertyTypes(); track propertyType.name) {
+                <div>
+                  <div class="flex items-center justify-between">
+                    <span class="truncate text-xs text-gray-400">
+                      {{ propertyType.name }}
+                    </span>
+
+                    <span class="text-sm font-semibold">
+                      {{ propertyType.count }}
+                    </span>
+                  </div>
+
+                  <div
+                    class="mt-2 h-1.5 overflow-hidden rounded-full bg-[#edf0f2] dark:bg-[#292d31]"
+                  >
+                    <div
+                      class="h-full rounded-full bg-[#5362e8]"
+                      [style.width.%]="propertyType.percentage"
+                    ></div>
+                  </div>
+                </div>
+              }
+            </div>
+          </div>
+        </section>
+
+        <!-- ============
+         MY PROPERTIES
+    ============= -->
+
+        <section
+          class="mt-4 rounded-lg border border-[#eceef1] bg-white p-4 dark:border-[#24282c] dark:bg-[#191c1f]"
+        >
+          <div class="flex flex-wrap items-center justify-between gap-3">
+            <div>
+              <h3 class="text-lg font-semibold">My Properties</h3>
+
+              <p class="text-xs text-gray-400">Recently added properties</p>
+            </div>
+
+            <button
+              type="button"
+              routerLink="/dashboard/properties"
+              class="text-sm font-medium text-[#5362e8]"
+            >
+              View All
+            </button>
+          </div>
+
+          <!-- Property Cards -->
+
+          <div class="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-4">
+            @for (property of statistics()?.recentProperties; track property.id) {
+              <article class="group overflow-hidden rounded-md">
+                <!-- Image -->
+
+                <div
+                  class="relative h-36.25 overflow-hidden rounded-md bg-gray-100 dark:bg-[#24282c]"
+                >
+                  <img
+                    [src]="property.photo"
+                    [alt]="property.title"
+                    class="h-full w-full object-cover transition duration-300 group-hover:scale-105"
+                  />
+
+                  <!-- Status -->
+
+                  <span
+                    class="absolute left-2 top-2 rounded px-2 py-1 text-xs font-medium uppercase"
+                    [class.bg-[#e9fff5]]="property.status === 'available'"
+                    [class.text-[#20a875]]="property.status === 'available'"
+                    [class.bg-[#fff5e5]]="property.status === 'rented'"
+                    [class.text-[#d88a00]]="property.status === 'rented'"
+                    [class.bg-[#ffecec]]="property.status === 'sold'"
+                    [class.text-[#e14b4b]]="property.status === 'sold'"
+                  >
+                    {{ property.status }}
+                    @if (property.status === 'available') {
+                      {{ property.listingType === 'rent' ? 'for rent' : 'for sale' }}
+                    }
+                  </span>
+
+                  <!-- Price -->
+
+                  <span
+                    class="absolute bottom-2 right-2 rounded bg-[#eef0ff] px-2 py-1 text-xs font-semibold text-[#5362e8]"
+                  >
+                    {{ property.price | currency: '₦' }}
+                  </span>
+                </div>
+
+                <!-- Content -->
+
+                <div class="pt-2">
+                  <h4 class="truncate text-sm font-medium">
+                    {{ property.title }}
+                  </h4>
+
+                  <div class="mt-1 flex items-center gap-1 text-xs text-gray-400">
+                    <svg
+                      class="h-3 w-3 shrink-0"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        stroke-width="1.8"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        d="M12 21s7-5.2 7-11a7 7 0 10-14 0c0 5.8 7 11 7 11z"
+                      />
+
+                      <circle cx="12" cy="10" r="2" stroke-width="1.8" />
+                    </svg>
+
+                    <span class="truncate">
+                      {{ property.location.address }}
+                    </span>
+                  </div>
+                </div>
+              </article>
+            }
+          </div>
+        </section>
+      </div>
+    }
+  </div>
+}

@@ -1,0 +1,160 @@
+@if (conversation(); as chat) {
+  @let otherUser = getOtherUser(chat);
+
+  <div class="flex h-screen flex-col bg-white dark:bg-[#17191c]">
+    <!-- Header -->
+
+    <div
+      class="flex items-center justify-between border-b border-gray-200 px-5 py-4 dark:border-gray-800"
+    >
+      <div class="flex items-center gap-3">
+        @if (otherUser?.photo) {
+          <img [src]="otherUser?.photo" class="h-10 w-10 rounded-full object-cover" />
+        } @else {
+          <div
+            class="ml-1 h-11 w-11 overflow-hidden rounded-full border-2 border-white bg-gray-100 dark:bg-gray-600 shadow-md dark:border-[#181b1e] flex items-center justify-center text-black dark:text-white"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-5 w-5"
+              fill="currentColor"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="1.5"
+                d="M15 19a4 4 0 00-8 0m4-7a3 3 0 100-6 3 3 0 000 6zm6 7a4 4 0 00-3-3.87"
+              />
+            </svg>
+          </div>
+        }
+
+        <div>
+          <h2 class="font-semibold text-gray-900 dark:text-white">
+            {{ otherUser?.name }}
+          </h2>
+
+          <p class="text-xs text-green-500">Online</p>
+        </div>
+      </div>
+
+      <!-- Call buttons -->
+
+      <div class="flex items-center gap-2">
+        <button
+          type="button"
+          (click)="startAudioCall()"
+          class="flex h-9 w-9 items-center justify-center rounded-full hover:bg-gray-100 dark:hover:bg-gray-800"
+        >
+          📞
+        </button>
+
+        <button
+          type="button"
+          (click)="startVideoCall()"
+          class="flex h-9 w-9 items-center justify-center rounded-full hover:bg-gray-100 dark:hover:bg-gray-800"
+        >
+          📹
+        </button>
+      </div>
+    </div>
+
+    <!-- Messages -->
+
+    <div class="flex-1 overflow-y-auto max-h-[62vh] sm:p-4 p-2" id="messageContainer">
+      @for (message of messages(); track message.id) {
+        @let isMyMessage = message.sender.id === this.currentUserId();
+        <div class="mb-2 flex" [class.justify-end]="isMyMessage">
+          <div
+            class="max-w-[70%] rounded-2xl px-4 py-3 text-sm"
+            [class.bg-blue-800]="isMyMessage"
+            [class.text-white]="isMyMessage"
+            [class.bg-gray-100]="isMyMessage"
+            [class.dark:bg-gray-800]="isMyMessage"
+            [class.dark:text-white]="isMyMessage"
+            //// br///
+            [class.bg-gray-100]="!isMyMessage"
+            [class.text-black]="!isMyMessage"
+            [class.bg-gray-100]="!isMyMessage"
+            [class.dark:bg-gray-800]="!isMyMessage"
+            [class.dark:text-white]="!isMyMessage"
+          >
+            <span>{{ message.content }}</span>
+            <span class="text-[8px] justify-end items-center gap-1 font-bold flex"
+              >{{ message.createdAt | date: 'M/d/yy, h:mm' }}
+              @if (isMyMessage) {
+                @if (isSending()) {
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="14"
+                    height="14"
+                    fill="currentColor"
+                    viewBox="0 0 256 256"
+                  >
+                    <path
+                      d="M170.83,101.17a4,4,0,0,1,0,5.66l-56,56a4,4,0,0,1-5.66,0l-24-24a4,4,0,0,1,5.66-5.66L112,154.34l53.17-53.17A4,4,0,0,1,170.83,101.17ZM228,128A100,100,0,1,1,128,28,100.11,100.11,0,0,1,228,128Zm-8,0a92,92,0,1,0-92,92A92.1,92.1,0,0,0,220,128Z"
+                    ></path>
+                  </svg>
+                } @else {
+                  @if (message.isRead) {
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="14"
+                      height="14"
+                      fill="currentColor"
+                      viewBox="0 0 256 256"
+                    >
+                      <path
+                        d="M146.8,82.85l-89.6,88a4,4,0,0,1-5.6,0L13.2,133.14a4,4,0,0,1,5.6-5.71l35.6,35,86.8-85.24a4,4,0,0,1,5.6,5.7Zm96-5.65a4,4,0,0,0-5.65,0l-86.8,85.24-21.63-21.24a4,4,0,1,0-5.61,5.7l24.44,24a4,4,0,0,0,5.6,0l89.6-88A4,4,0,0,0,242.85,77.2Z"
+                      ></path>
+                    </svg>
+                  } @else {
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="14"
+                      height="14"
+                      fill="currentColor"
+                      viewBox="0 0 256 256"
+                    >
+                      <path
+                        d="M226.83,74.83l-128,128a4,4,0,0,1-5.66,0l-56-56a4,4,0,0,1,5.66-5.66L96,194.34,221.17,69.17a4,4,0,1,1,5.66,5.66Z"
+                      ></path>
+                    </svg>
+                  }
+                }
+              }
+            </span>
+          </div>
+        </div>
+      }
+    </div>
+
+    <!-- Input -->
+
+    <div class="border-t border-gray-200 p-4 dark:border-gray-800">
+      <div class="flex items-center gap-3">
+        <input
+          type="text"
+          [ngModel]="messageText()"
+          (ngModelChange)="messageText.set($event); onTyping()"
+          (keydown.enter)="sendMessage()"
+          placeholder="Type a message..."
+          class="flex-1 rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 outline-none dark:border-gray-700 dark:bg-gray-800 dark:text-white"
+        />
+
+        <button
+          type="button"
+          (click)="sendMessage()"
+          [disabled]="!messageText().trim()"
+          class="rounded-xl bg-blue-600 px-5 py-3 text-white hover:bg-blue-700 disabled:cursor-no-drop disabled:bg-blue-200 hover:disabled:bg-blue-200"
+        >
+          Send
+        </button>
+      </div>
+    </div>
+  </div>
+} @else {
+  <div class="flex h-full items-center justify-center text-gray-500">Select a conversation</div>
+}

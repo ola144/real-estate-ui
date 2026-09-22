@@ -1,0 +1,167 @@
+<main
+  class="mx-auto max-w-7xl px-5 pb-20 pt-32 relative bg-white text-[#20242c] transition-colors dark:bg-[#101214] dark:text-white lg:px-8"
+>
+  <div class="grid gap-14 lg:grid-cols-[0.75fr_1.25fr] lg:items-start">
+    <div>
+      <a routerLink="/profile" class="text-sm font-semibold text-[#61736a]">← Back to profile</a>
+      <p class="mt-12 text-xs font-bold uppercase tracking-[0.2em] text-[#789085]">
+        Property services
+      </p>
+      <h1 class="mt-4 text-5xl font-semibold leading-tight tracking-[-0.06em]">
+        Thinking about selling?
+      </h1>
+      <p class="mt-6 max-w-sm leading-7 text-gray-500">
+        Start with a conversation. We’ll learn about your property, share a considered valuation,
+        and outline a plan that fits your goals.
+      </p>
+      <div class="mt-10 space-y-6">
+        <div class="flex gap-4">
+          <span
+            class="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-[#d7ef61] text-sm font-bold"
+            >1</span
+          >
+          <div>
+            <h2 class="font-semibold">Tell us about the property</h2>
+            <p class="mt-1 text-sm leading-6 text-gray-500">
+              A few details are enough to get started.
+            </p>
+          </div>
+        </div>
+        <div class="flex gap-4">
+          <span
+            class="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-[#d7ef61] text-sm font-bold"
+            >2</span
+          >
+          <div>
+            <h2 class="font-semibold">Meet your local advisor</h2>
+            <p class="mt-1 text-sm leading-6 text-gray-500">
+              Get practical advice from someone who knows your market.
+            </p>
+          </div>
+        </div>
+        <div class="flex gap-4">
+          <span
+            class="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-[#d7ef61] text-sm font-bold"
+            >3</span
+          >
+          <div>
+            <h2 class="font-semibold">Make your next move</h2>
+            <p class="mt-1 text-sm leading-6 text-gray-500">
+              Choose a strategy with clarity and confidence.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="rounded-2xl bg-white p-6 shadow-sm ring-1 ring-black/5 dark:bg-[#181c20] sm:p-9">
+      @if (submitted()) {
+        <div class="py-12 text-center">
+          <div
+            class="mx-auto grid h-14 w-14 place-items-center rounded-full bg-[#d7ef61] text-2xl text-[#263b31]"
+          >
+            ✓
+          </div>
+          <h2 class="mt-6 text-2xl font-semibold">Request received.</h2>
+          <p class="mx-auto mt-3 max-w-sm leading-7 text-gray-500">
+            Thanks for reaching out. A refine advisor will contact you within one business day.
+          </p>
+          <a
+            routerLink="/"
+            class="mt-7 inline-block rounded-full bg-[#263b31] px-6 py-3 text-sm font-semibold text-white"
+            >Return home</a
+          >
+        </div>
+      } @else {
+        <h2 class="text-xl font-semibold">Tell us about your property</h2>
+        <p class="mt-2 text-sm text-gray-500">No commitment, just a useful first conversation.</p>
+        <form (ngSubmit)="submit()" class="mt-8 space-y-5" #requestForm="ngForm">
+          <div class="grid gap-5 sm:grid-cols-2">
+            <label class="text-sm font-semibold"
+              >Your name<input
+                [(ngModel)]="request.name"
+                name="name"
+                type="text"
+                #name="ngModel"
+                required
+                class="mt-2 w-full rounded-lg border border-gray-200 bg-[#fbfaf8] px-4 py-3 font-normal outline-none focus:border-[#789085] dark:border-gray-700 dark:bg-[#202428] dark:text-white"
+                placeholder="Full name"
+              />
+              @if (name.touched && name.invalid) {
+                <p class="text-sm text-red-500">Name is required!</p>
+              }</label
+            ><label class="text-sm font-semibold"
+              >Email address<input
+                [(ngModel)]="request.email"
+                name="email"
+                required
+                #email="ngModel"
+                type="email"
+                class="mt-2 w-full rounded-lg border border-gray-200 bg-[#fbfaf8] px-4 py-3 font-normal outline-none focus:border-[#789085] dark:border-gray-700 dark:bg-[#202428] dark:text-white"
+                placeholder="you@example.com"
+              />
+              @if (email.touched && email.invalid) {
+                <p class="text-sm text-red-500">Email is required!</p>
+              }
+            </label>
+          </div>
+          <div class="grid gap-5 sm:grid-cols-2">
+            <label class="text-sm font-semibold"
+              >Phone number<input
+                [(ngModel)]="request.phone"
+                name="phone"
+                required
+                type="tel"
+                #phone="ngModel"
+                class="mt-2 w-full rounded-lg border border-gray-200 bg-[#fbfaf8] px-4 py-3 font-normal outline-none focus:border-[#789085] dark:border-gray-700 dark:bg-[#202428] dark:text-white"
+                placeholder="+1 (000) 000-0000"
+              />
+              @if (phone.touched && phone.invalid) {
+                <p class="text-sm text-red-500">Phone number is required!</p>
+              }</label
+            ><label class="text-sm font-semibold"
+              >Property type<select
+                [(ngModel)]="request.type"
+                name="type"
+                required
+                class="mt-2 w-full rounded-lg border border-gray-200 bg-[#fbfaf8] px-4 py-3 font-normal outline-none dark:border-gray-700 dark:bg-[#202428] dark:text-white"
+              >
+                <option>House</option>
+                <option>Apartment</option>
+                <option>Villa</option>
+                <option>Cottage</option>
+                <option>Commercial</option>
+              </select></label
+            >
+          </div>
+          <label class="block text-sm font-semibold"
+            >Property address<input
+              [(ngModel)]="request.address"
+              name="address"
+              required
+              #address="ngModel"
+              class="mt-2 w-full rounded-lg border border-gray-200 bg-[#fbfaf8] px-4 py-3 font-normal outline-none focus:border-[#789085] dark:border-gray-700 dark:bg-[#202428] dark:text-white"
+              placeholder="Street, city, state"
+            />
+            @if (address.touched && address.invalid) {
+              <p class="text-sm text-red-500">Address is required!</p>
+            }</label
+          ><label class="block text-sm font-semibold"
+            >Anything we should know?<textarea
+              [(ngModel)]="request.notes"
+              name="notes"
+              rows="4"
+              class="mt-2 w-full resize-none rounded-lg border border-gray-200 bg-[#fbfaf8] px-4 py-3 font-normal outline-none focus:border-[#789085] dark:border-gray-700 dark:bg-[#202428] dark:text-white"
+              placeholder="Tell us about the home, your timeline, or your goals..."
+            ></textarea></label
+          ><button
+            type="submit"
+            [disabled]="requestForm.invalid || loading()"
+            class="w-full rounded-full bg-[#263b31] px-6 py-3 text-sm font-semibold text-white disabled:bg-[#263b31]/50"
+          >
+            {{ loading() ? 'Requesting...' : 'Request a valuation conversation' }}
+          </button>
+        </form>
+      }
+    </div>
+  </div>
+</main>

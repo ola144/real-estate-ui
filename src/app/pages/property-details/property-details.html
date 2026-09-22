@@ -1,0 +1,350 @@
+<div
+  class="min-h-screen bg-[#f7f8fa] px-4 py-4 text-gray-900 sm:px-6 lg:px-8 dark:bg-[#101214] dark:text-white lg:ml-55"
+>
+  <!-- ============== -->
+  <!-- PAGE CONTAINER -->
+  <!-- ================= -->
+
+  <div class="mx-auto max-w-7xl">
+    <!-- =============== -->
+    <!-- HEADER -->
+    <!-- ===============  -->
+
+    <div class="mb-4">
+      <button
+        type="button"
+        (click)="goBack()"
+        class="group flex items-center gap-2 text-xl font-medium text-gray-700 transition hover:text-[#4f5bea] dark:text-gray-300 dark:hover:text-[#6570f5]"
+      >
+        <svg
+          class="h-4 w-4 transition group-hover:-translate-x-0.5"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <path
+            d="M15 19l-7-7 7-7"
+            stroke-width="1.8"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+        </svg>
+
+        Details
+      </button>
+    </div>
+
+    <!-- ============ -->
+    <!-- MAIN CONTENT -->
+    <!-- ======= -->
+
+    @if (isLoading()) {
+      <app-loading />
+    } @else {
+      <div
+        class="overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-[#181c20]"
+      >
+        <div class="grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_280px]">
+          <!-- ========-->
+          <!-- LEFT CONTENT -->
+          <!-- ========-->
+
+          <div class="min-w-0 p-4 sm:p-5">
+            <!-- ===========-->
+            <!-- IMAGE GALLERY -->
+            <!-- ===========-->
+
+            <div
+              class="grid grid-cols-1 gap-2 sm:grid-cols-[minmax(0,1fr)_98px] lg:grid-cols-[minmax(0,1fr)_98px]"
+            >
+              <!-- Main Image -->
+
+              <div class="h-62.5 overflow-hidden rounded-lg sm:h-75 lg:h-82.5 relative">
+                <img
+                  [src]="property()?.photos[selectedImageIndex()]"
+                  [alt]="property()?.title"
+                  class="h-full w-full object-cover"
+                />
+              </div>
+
+              <!-- Side Images -->
+
+              <div class="flex gap-2 sm:flex-col">
+                @for (image of property()?.photos; track image; let i = $index) {
+                  <div class="relative h-30 flex-1 overflow-hidden rounded-lg sm:h-36.25">
+                    <img
+                      [src]="image"
+                      [alt]="'Property image ' + (i + 2)"
+                      class="h-full w-full object-cover cursor-pointer hover:*:scale-105 transition"
+                      (click)="selectImage(i)"
+                    />
+                  </div>
+                }
+              </div>
+            </div>
+
+            <!-- ========= -->
+            <!-- PROPERTY BASIC INFORMATION -->
+            <!-- ========= -->
+
+            <div class="mt-4">
+              <p class="text-xs font-medium text-gray-700 dark:text-gray-300">
+                {{ property()?.propertyType }}
+              </p>
+
+              <h1 class="mt-1 text-base font-semibold text-gray-900 sm:text-lg dark:text-white">
+                {{ property()?.title }}
+                <span
+                  class="rounded-xl py-1 px-2 uppercase text-xs font-bold shadow-xl text-white"
+                  [class]="property().status === 'available' ? 'bg-green-500' : 'bg-red-500'"
+                  >{{ property().status }}
+                  @if (property().status === 'available') {
+                    {{ property().listingType === 'rent' ? 'For Rent' : 'for sale' }}
+                  }
+                </span>
+              </h1>
+
+              <!-- Location -->
+              <div class="mt-1 flex items-center gap-1 text-sm text-gray-400">
+                <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path d="M12 21s7-6.2 7-12a7 7 0 1 0-14 0c0 5.8 7 12 7 12Z" stroke-width="1.5" />
+
+                  <circle cx="12" cy="9" r="2" stroke-width="1.5" />
+                </svg>
+
+                {{ property()?.location.address }}
+              </div>
+            </div>
+
+            <!-- ======= -->
+            <!-- FACILITIES -->
+            <!-- ======= -->
+
+            <div class="mt-5">
+              <h2 class="text-xs font-semibold text-gray-800 dark:text-gray-200">Facility</h2>
+
+              <div class="mt-3 grid grid-cols-2 gap-y-4 sm:grid-cols-3">
+                <!-- Beds -->
+
+                <div class="flex items-center gap-2">
+                  <svg
+                    class="h-3.5 w-3.5 text-gray-400"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      d="M4 18v-7m0 0V8a2 2 0 012-2h4a2 2 0 012 2v3m-8 0h16m0 0V8a2 2 0 00-2-2h-4a2 2 0 00-2 2v3m8 0v7"
+                      stroke-width="1.5"
+                      stroke-linecap="round"
+                    />
+                  </svg>
+
+                  <span class="text-sm text-gray-500"> {{ property()?.beds }} Beds </span>
+                </div>
+
+                <!-- Baths -->
+
+                <div class="flex items-center gap-2">
+                  <svg
+                    class="h-3.5 w-3.5 text-gray-400"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      d="M4 13h16M5 13v3m14-3v3M6 13V7a2 2 0 012-2h3a2 2 0 012 2v6"
+                      stroke-width="1.5"
+                      stroke-linecap="round"
+                    />
+                  </svg>
+
+                  <span class="text-sm text-gray-500"> {{ property()?.baths }} Baths </span>
+                </div>
+
+                <!-- Area -->
+
+                <div class="flex items-center gap-2">
+                  <svg
+                    class="h-3.5 w-3.5 text-gray-400"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      d="M4 4h6M4 4v6M20 20h-6m6 0v-6M4 20h6m-6 0v-6M20 4h-6m6 0v6"
+                      stroke-width="1.5"
+                      stroke-linecap="round"
+                    />
+                  </svg>
+
+                  <span class="text-sm text-gray-500"> {{ property()?.area }} Area </span>
+                </div>
+
+                @for (item of property().facilities; track $index) {
+                  <div class="flex items-center gap-2">
+                    <svg
+                      class="h-3.5 w-3.5 text-gray-400"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        d="M5 10h14M7 10v9m10-9v9M5 19h14M8 5v5m4-5v5m4-5v5"
+                        stroke-width="1.5"
+                        stroke-linecap="round"
+                      />
+                    </svg>
+
+                    <span class="text-sm text-gray-500 capitalize"> {{ item }} </span>
+                  </div>
+                }
+              </div>
+            </div>
+
+            <!-- =========== -->
+            <!-- DESCRIPTION -->
+            <!-- =========== -->
+
+            <div class="mt-6">
+              <h2 class="text-xs font-semibold text-gray-800 dark:text-gray-200">Description</h2>
+
+              <p class="mt-2 max-w-3xl text-sm leading-5 text-gray-400">
+                {{ property()?.description }}
+              </p>
+            </div>
+          </div>
+
+          <!-- ======== -->
+          <!-- RIGHT SIDEBAR -->
+          <!-- ======== -->
+
+          <aside
+            class="border-t border-gray-100 bg-gray-50/50 p-4 sm:p-5 lg:border-l lg:border-t-0 dark:border-gray-800 dark:bg-[#15181b]"
+          >
+            <!-- ===== -->
+            <!-- AGENT CARD -->
+            <!-- ===== -->
+
+            <div
+              class="relative rounded-xl border border-gray-200 bg-white p-4 dark:border-gray-800 dark:bg-[#1c2024]"
+            >
+              <!-- Agent -->
+
+              <div class="flex flex-col items-center">
+                @if (property()?.agent.photo) {
+                  <img
+                    [src]="property()?.agent?.photo"
+                    [alt]="property()?.agent?.name"
+                    class="h-12 w-12 rounded-full object-cover ring-2 ring-gray-100 dark:ring-gray-700"
+                  />
+                } @else {
+                  <div
+                    class="h-14 w-14 overflow-hidden rounded-full bg-gray-100 dark:bg-gray-800 uppercase text-lg flex items-center justify-center font-bold p-1"
+                  >
+                    <span
+                      >{{ property()?.agent?.name.split(' ')[0][0]
+                      }}{{ property()?.agent?.name.split(' ')[1][0] }}</span
+                    >
+                  </div>
+                }
+
+                <h3 class="mt-2 text-sm uppercase font-semibold text-gray-900 dark:text-white">
+                  {{ property()?.agent?.name }}
+                </h3>
+
+                <p class="mt-0.5 text-xs uppercase text-gray-400">
+                  {{ property()?.agent?.role }}
+                </p>
+
+                <!-- Agent Location -->
+                @if (property().agent.location) {
+                  <div class="mt-3 flex items-center gap-1 text-xs text-gray-400">
+                    <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path
+                        d="M12 21s7-6.2 7-12a7 7 0 1 0-14 0c0 5.8 7 12 7 12Z"
+                        stroke-width="1.5"
+                      />
+
+                      <circle cx="12" cy="9" r="2" stroke-width="1.5" />
+                    </svg>
+
+                    {{ property()?.agent.location }}
+                  </div>
+                }
+              </div>
+
+              <!-- Agent Actions -->
+
+              <div class="mt-4 flex items-center justify-center">
+                <a
+                  type="button"
+                  [href]="'tel:' + property()?.agent?.phone"
+                  class="flex h-8 items-center justify-center gap-1.5 rounded-md bg-[#24d486] text-sm font-medium text-white transition hover:bg-[#1fbd76] px-4 py-2"
+                >
+                  <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path
+                      d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6A19.79 19.79 0 012.12 4.18 2 2 0 014.11 2h3a2 2 0 012 1.72c.12.9.33 1.78.62 2.63a2 2 0 01-.45 2.11L8 9.73a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.85.29 1.73.5 2.63.62A2 2 0 0122 16.92Z"
+                      stroke-width="1.5"
+                    />
+                  </svg>
+
+                  Call
+                </a>
+              </div>
+            </div>
+
+            <!-- ==================-->
+            <!-- PRICE -->
+            <!-- ==================-->
+
+            <div class="mt-5">
+              <div class="flex items-center justify-between">
+                <div>
+                  <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Price</p>
+
+                  <div class="mt-1 flex items-end gap-1">
+                    <span class="text-xl font-bold text-[#4f5bea]">
+                      {{ property()?.price | currency: 'NGN' : 'symbol-narrow' }}
+                      @if (property()?.listingType === 'rent') {
+                        <span class="text-xs font-normal text-gray-400"> / year</span>
+                      }
+                    </span>
+                  </div>
+                </div>
+
+                <!-- Rating -->
+
+                <!-- <div class="flex items-center gap-1">
+                  <div class="flex gap-0.5">
+                    @for (star of [1, 2, 3, 4, 5]; track star) {
+                      <svg class="h-3 w-3 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
+                        <path
+                          d="M10 15.27L16.18 19l-1.64-7.03L20 7.24l-7.19-.61L10 0 7.19 6.63 0 7.24l5.46 4.73L3.82 19z"
+                        />
+                      </svg>
+                    }
+                  </div>
+                </div> -->
+              </div>
+            </div>
+
+            <!-- ======= -->
+            <!-- MAP -->
+            <!-- ======= -->
+
+            <div
+              class="mt-5 h-45 overflow-hidden rounded-lg border border-gray-200 dark:border-gray-700"
+            >
+              <iframe
+                title="Property location"
+                class="h-full w-full border-0 grayscale-15"
+                src="https://www.openstreetmap.org/export/embed.html?bbox=-74.02%2C40.66%2C-73.92%2C40.72&layer=mapnik"
+              ></iframe>
+            </div>
+          </aside>
+        </div>
+      </div>
+    }
+  </div>
+</div>

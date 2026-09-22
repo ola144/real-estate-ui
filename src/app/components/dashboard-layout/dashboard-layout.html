@@ -1,0 +1,14 @@
+<div
+  className="flex h-screen min-h-screen bg-scroll relative w-full bg-[#f7f8fa] dark:bg-[#101214] overflow-hidden mx-auto"
+>
+  <app-sidebar [isOpen]="sidebarOpen()" (closeSidebar)="closeSidebar()" />
+
+  <main
+    className="flex-1 flex flex-col overflow-auto xl:px-32 lg:px-14 md:px-12 sm:px-10 px-2 lg:py-4"
+  >
+    <div>
+      <app-dashboard-header (openSidebar)="openSidebar()" />
+      <router-outlet />
+    </div>
+  </main>
+</div>

@@ -1,0 +1,342 @@
+@if (isHome() == '/') {
+  <header class="fixed w-full inset-x-0 top-0 z-500 border-b border-white/20 text-white" #header>
+    <!-- [class]="router.url !== '/' ? '' : 'srollBg'" -->
+    <nav
+      class="mx-auto flex max-w-7xl items-center justify-between px-5 py-5 lg:px-8"
+      aria-label="Main navigation"
+    >
+      <!-- Logo -->
+      <div>
+        <a
+          routerLink="/"
+          (click)="showMobileMenu.set(false)"
+          class="inline-flex items-center gap-2"
+        >
+          <div
+            class="flex h-9 w-9 items-center justify-center rounded-lg bg-[#fefffa] text-[#202e28]"
+          >
+            <span class="text-lg font-bold">R</span>
+          </div>
+
+          <span class="text-lg font-bold text-white"> RealEstate </span>
+        </a>
+      </div>
+
+      <div class="hidden items-center gap-8 text-sm font-medium md:flex uppercase">
+        <a routerLink="/properties" class="transition hover:text-[#d7ef61] uppercase"
+          >Find a home</a
+        >
+        <a routerLink="/about" class="transition hover:text-[#d7ef61]">About us</a>
+        <a routerLink="/contact" class="transition hover:text-[#d7ef61]">Contact</a>
+      </div>
+
+      <!-- Mobile -->
+      <div
+        class="flex items-center gap-3 text-sm font-medium md:hidden bg-[#33473e] justify-center w-full absolute top-0 left-0 z-300 flex-col py-4 uppercase transition-all duration-500 -translate-y-100"
+        [class]="showMobileMenu() ? 'translate-y-19' : ''"
+      >
+        <a
+          routerLink="/properties"
+          (click)="showMobileMenu.set(false)"
+          class="transition hover:text-[#d7ef61]"
+          >Find a home</a
+        >
+        <a
+          routerLink="/about"
+          (click)="showMobileMenu.set(false)"
+          class="transition hover:text-[#d7ef61]"
+          >About us</a
+        >
+        <a
+          routerLink="/contact"
+          (click)="showMobileMenu.set(false)"
+          class="transition hover:text-[#d7ef61]"
+          >Contact</a
+        >
+        @if (!authService.isAuthenticated()) {
+          <a routerLink="/auth/login" (click)="showMobileMenu.set(false)" class="px-3 py-2 block"
+            >Sign in</a
+          >
+          <a
+            routerLink="/auth/signup"
+            (click)="showMobileMenu.set(false)"
+            class="rounded-full bg-white px-3 py-2 font-semibold text-[#25352d] transition hover:bg-[#d7ef61]"
+            >List your property</a
+          >
+        }
+      </div>
+      <!-- Mobile -->
+
+      <div class="flex items-center gap-1 text-sm uppercase">
+        @if (authService.isAuthenticated()) {
+          <div class="flex items-center gap-1">
+            <button
+              aria-label="Menu"
+              class="bg-white text-[#33473e] rounded-full p-1"
+              routerLink="/profile"
+            >
+              @if (authService.currentUser()?.photo) {
+                <img
+                  [src]="authService.currentUser()?.photo"
+                  [alt]="authService.currentUser()?.name"
+                  class="rounded-full h-6 w-6"
+                />
+              } @else {
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="24"
+                  height="24"
+                  fill="currentColor"
+                  viewBox="0 0 256 256"
+                >
+                  <path
+                    d="M230.93,220a8,8,0,0,1-6.93,4H32a8,8,0,0,1-6.92-12c15.23-26.33,38.7-45.21,66.09-54.16a72,72,0,1,1,73.66,0c27.39,8.95,50.86,27.83,66.09,54.16A8,8,0,0,1,230.93,220Z"
+                  ></path>
+                </svg>
+              }
+            </button>
+            <button
+              class="bg-red-500 text-white rounded-lg p-1 hover:bg-red-400"
+              aria-label="logout"
+              (click)="showLogoutPopup.set(true)"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                fill="currentColor"
+                viewBox="0 0 256 256"
+              >
+                <path
+                  d="M120,216a8,8,0,0,1-8,8H48a8,8,0,0,1-8-8V40a8,8,0,0,1,8-8h64a8,8,0,0,1,0,16H56V208h56A8,8,0,0,1,120,216Zm109.66-93.66-40-40A8,8,0,0,0,176,88v32H112a8,8,0,0,0,0,16h64v32a8,8,0,0,0,13.66,5.66l40-40A8,8,0,0,0,229.66,122.34Z"
+                ></path>
+              </svg>
+            </button>
+          </div>
+        }
+
+        @if (!authService.isAuthenticated()) {
+          <a routerLink="/auth/login" class="px-3 py-2 md:block hidden">Sign in</a>
+          <a
+            routerLink="/auth/signup"
+            class="rounded-full bg-white px-3 py-2 font-semibold text-[#25352d] transition hover:bg-[#d7ef61] md:block hidden"
+            >List your property</a
+          >
+        }
+
+        <button class="md:hidden block" (click)="showMobileMenu.set(!showMobileMenu())">
+          @if (showMobileMenu()) {
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              fill="#ffffff"
+              viewBox="0 0 256 256"
+            >
+              <path
+                d="M205.66,194.34a8,8,0,0,1-11.32,11.32L128,139.31,61.66,205.66a8,8,0,0,1-11.32-11.32L116.69,128,50.34,61.66A8,8,0,0,1,61.66,50.34L128,116.69l66.34-66.35a8,8,0,0,1,11.32,11.32L139.31,128Z"
+              ></path>
+            </svg>
+          } @else {
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              fill="#ffffff"
+              viewBox="0 0 256 256"
+            >
+              <path
+                d="M224,128a8,8,0,0,1-8,8H40a8,8,0,0,1,0-16H216A8,8,0,0,1,224,128ZM40,72H216a8,8,0,0,0,0-16H40a8,8,0,0,0,0,16ZM216,184H40a8,8,0,0,0,0,16H216a8,8,0,0,0,0-16Z"
+              ></path>
+            </svg>
+          }
+        </button>
+      </div>
+    </nav>
+  </header>
+} @else {
+  <header class="fixed w-full inset-x-0 top-0 z-500 border-b border-white/20 text-white scrollBg">
+    <!-- [class]="router.url !== '/' ? '' : 'srollBg'" -->
+    <nav
+      class="mx-auto flex max-w-7xl items-center justify-between px-5 py-5 lg:px-8"
+      aria-label="Main navigation"
+    >
+      <!-- Logo -->
+      <div>
+        <a
+          routerLink="/"
+          (click)="showMobileMenu.set(false)"
+          class="inline-flex items-center gap-2"
+        >
+          <div
+            class="flex h-9 w-9 items-center justify-center rounded-lg bg-[#fefffa] text-[#202e28]"
+          >
+            <span class="text-lg font-bold">R</span>
+          </div>
+
+          <span class="text-lg font-bold text-white"> RealEstate </span>
+        </a>
+      </div>
+
+      <div class="hidden items-center gap-8 text-sm font-medium md:flex uppercase">
+        <a
+          routerLink="/properties"
+          routerLinkActive="userActiveMenu"
+          class="transition hover:text-[#d7ef61] uppercase"
+          >Find a home</a
+        >
+        <a
+          routerLink="/about"
+          routerLinkActive="userActiveMenu"
+          class="transition hover:text-[#d7ef61]"
+          >About us</a
+        >
+        <a
+          routerLink="/contact"
+          routerLinkActive="userActiveMenu"
+          class="transition hover:text-[#d7ef61]"
+          >Contact</a
+        >
+      </div>
+
+      <!-- Mobile -->
+      <div
+        class="flex items-center gap-3 text-sm font-medium md:hidden bg-[#33473e] justify-center w-full absolute top-0 left-0 z-300 flex-col py-4 uppercase transition-all duration-500 -translate-y-100"
+        [class]="showMobileMenu() ? 'translate-y-19' : ''"
+      >
+        <a
+          routerLink="/properties"
+          routerLinkActive="userActiveMenu"
+          (click)="showMobileMenu.set(false)"
+          class="transition hover:text-[#d7ef61]"
+          >Find a home</a
+        >
+        <a
+          routerLink="/about"
+          routerLinkActive="userActiveMenu"
+          (click)="showMobileMenu.set(false)"
+          class="transition hover:text-[#d7ef61]"
+          >About us</a
+        >
+        <a
+          routerLink="/contact"
+          routerLinkActive="userActiveMenu"
+          (click)="showMobileMenu.set(false)"
+          class="transition hover:text-[#d7ef61]"
+          >Contact</a
+        >
+        @if (!authService.isAuthenticated()) {
+          <a
+            routerLink="/auth/login"
+            routerLinkActive="userActiveMenu"
+            (click)="showMobileMenu.set(false)"
+            class="px-3 py-2 block"
+            >Sign in</a
+          >
+          <a
+            routerLink="/auth/signup"
+            routerLinkActive="userActiveMenu"
+            (click)="showMobileMenu.set(false)"
+            class="rounded-full bg-white px-3 py-2 font-semibold text-[#25352d] transition hover:bg-[#d7ef61]"
+            >List your property</a
+          >
+        }
+      </div>
+      <!-- Mobile -->
+
+      <div class="flex items-center gap-1 text-sm uppercase">
+        @if (authService.isAuthenticated()) {
+          <div class="flex items-center gap-1">
+            <button
+              aria-label="Menu"
+              class="bg-white text-[#33473e] rounded-full p-1"
+              routerLink="/profile"
+            >
+              @if (authService.currentUser()?.photo) {
+                <img
+                  [src]="authService.currentUser()?.photo"
+                  [alt]="authService.currentUser()?.name"
+                  class="rounded-full h-6 w-6"
+                />
+              } @else {
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="24"
+                  height="24"
+                  fill="currentColor"
+                  viewBox="0 0 256 256"
+                >
+                  <path
+                    d="M230.93,220a8,8,0,0,1-6.93,4H32a8,8,0,0,1-6.92-12c15.23-26.33,38.7-45.21,66.09-54.16a72,72,0,1,1,73.66,0c27.39,8.95,50.86,27.83,66.09,54.16A8,8,0,0,1,230.93,220Z"
+                  ></path>
+                </svg>
+              }
+            </button>
+            <button
+              class="bg-red-500 text-white rounded-lg p-1 hover:bg-red-400"
+              aria-label="logout"
+              (click)="showLogoutPopup.set(true)"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                fill="currentColor"
+                viewBox="0 0 256 256"
+              >
+                <path
+                  d="M120,216a8,8,0,0,1-8,8H48a8,8,0,0,1-8-8V40a8,8,0,0,1,8-8h64a8,8,0,0,1,0,16H56V208h56A8,8,0,0,1,120,216Zm109.66-93.66-40-40A8,8,0,0,0,176,88v32H112a8,8,0,0,0,0,16h64v32a8,8,0,0,0,13.66,5.66l40-40A8,8,0,0,0,229.66,122.34Z"
+                ></path>
+              </svg>
+            </button>
+          </div>
+        }
+
+        @if (!authService.isAuthenticated()) {
+          <a routerLink="/auth/login" class="px-3 py-2 md:block hidden">Sign in</a>
+          <a
+            routerLink="/auth/signup"
+            class="rounded-full bg-white px-3 py-2 font-semibold text-[#25352d] transition hover:bg-[#d7ef61] md:block hidden"
+            >List your property</a
+          >
+        }
+
+        <button class="md:hidden block" (click)="showMobileMenu.set(!showMobileMenu())">
+          @if (showMobileMenu()) {
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              fill="#ffffff"
+              viewBox="0 0 256 256"
+            >
+              <path
+                d="M205.66,194.34a8,8,0,0,1-11.32,11.32L128,139.31,61.66,205.66a8,8,0,0,1-11.32-11.32L116.69,128,50.34,61.66A8,8,0,0,1,61.66,50.34L128,116.69l66.34-66.35a8,8,0,0,1,11.32,11.32L139.31,128Z"
+              ></path>
+            </svg>
+          } @else {
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              fill="#ffffff"
+              viewBox="0 0 256 256"
+            >
+              <path
+                d="M224,128a8,8,0,0,1-8,8H40a8,8,0,0,1,0-16H216A8,8,0,0,1,224,128ZM40,72H216a8,8,0,0,0,0-16H40a8,8,0,0,0,0,16ZM216,184H40a8,8,0,0,0,0,16H216a8,8,0,0,0,0-16Z"
+              ></path>
+            </svg>
+          }
+        </button>
+      </div>
+    </nav>
+  </header>
+}
+
+<div
+  class="bg-black/50 fixed inset-0 z-200 w-full h-full transition-all duration-500"
+  (click)="showMobileMenu.set(false)"
+  [class]="showMobileMenu() ? 'block' : 'hidden'"
+></div>
+
+<app-logout [showLogoutPopup]="showLogoutPopup()" (closeLogoutPopup)="showLogoutPopup.set(false)" />

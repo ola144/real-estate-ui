@@ -1,0 +1,37 @@
+<main
+  class="grid min-h-screen place-items-center overflow-hidden bg-black/50 px-6 text-white fixed w-full h-full top-0 inset-x-0 z-6000"
+  role="status"
+  aria-live="polite"
+  aria-label="Loading real estate"
+>
+  <div class="pointer-events-none absolute inset-0 opacity-20">
+    <div class="absolute -right-28 -top-28 h-96 w-96 rounded-full border border-[#d7ef61]"></div>
+    <div class="absolute -right-12 -top-12 h-64 w-64 rounded-full border border-[#d7ef61]"></div>
+    <div class="absolute -bottom-40 -left-32 h-120 w-120 rounded-full border border-white"></div>
+    <div class="absolute inset-x-0 top-1/2 h-px bg-white/30"></div>
+    <div class="absolute bottom-0 left-1/2 h-full w-px bg-white/20"></div>
+  </div>
+
+  <div class="relative flex w-full max-w-sm flex-col items-center text-center">
+    <div
+      class="relative grid h-20 w-20 place-items-center rounded-[1.75rem] bg-[#d7ef61] text-[#202e28] shadow-[0_0_0_12px_rgba(215,239,97,0.08)]"
+    >
+      <span class="text-4xl font-bold tracking-[-0.12em]">R<span class="text-2xl">E</span></span>
+      <span
+        class="absolute inset-0 animate-ping rounded-[1.75rem] border border-[#d7ef61]/70"
+      ></span>
+    </div>
+
+    <p class="mt-8 text-2xl font-bold tracking-tighter">
+      Real Estate<span class="text-[#d7ef61]">.</span>
+    </p>
+    <p class="mt-3 text-sm text-white/55">Preparing your next place.</p>
+
+    <div class="mt-10 h-1 w-full overflow-hidden rounded-full bg-white/10">
+      <div class="h-full w-2/5 animate-pulse rounded-full bg-[#d7ef61]"></div>
+    </div>
+    <p class="mt-3 text-[10px] font-bold uppercase tracking-[0.24em] text-white/35">Loading...</p>
+  </div>
+
+  <p class="absolute bottom-7 text-xs text-white/30">Good spaces take a moment.</p>
+</main>
