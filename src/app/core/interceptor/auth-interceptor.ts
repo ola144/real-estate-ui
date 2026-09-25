@@ -17,7 +17,7 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
         if (isPlatformBrowser(platformId)) {
           sessionStorage.setItem('sessionExpired', 'Session Expired. Login again!');
 
-          window.location.href = '/auth/login';
+          window.location.href = '/';
         }
       }
 

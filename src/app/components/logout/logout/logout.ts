@@ -26,7 +26,7 @@ export class Logout {
     this.loading.set(true);
     this.authService.logout().subscribe({
       next: () => {
-        this.router.navigate(['/auth/login']);
+        this.router.navigate(['/']);
         this.loading.set(false);
       },
       error: (err) => {
