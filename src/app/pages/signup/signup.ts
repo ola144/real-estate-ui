@@ -110,6 +110,7 @@ export class Signup implements OnInit, AfterViewInit {
         if (res?.success) {
           const data = res.user;
           console.log(data);
+          localStorage.setItem('userId', data?.id ?? '');
           this.authService.currentUser.set(data);
           toast.success(res.message || 'Signup successfully!');
           this.router.navigate(['/']);
@@ -145,6 +146,7 @@ export class Signup implements OnInit, AfterViewInit {
       next: (res) => {
         if (res.success) {
           const data = res.user;
+          localStorage.setItem('userId', data?.id ?? '');
           console.log(data);
           toast.success(res.message || 'Signup successfully!');
           this.router.navigate(['/']);

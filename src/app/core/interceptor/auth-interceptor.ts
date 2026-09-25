@@ -16,8 +16,9 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
       if (error.status === 401 && !router.url.includes('/auth')) {
         if (isPlatformBrowser(platformId)) {
           sessionStorage.setItem('sessionExpired', 'Session Expired. Login again!');
+          localStorage.removeItem('userId');
 
-          window.location.href = '/';
+          window.location.href = '/auth/login';
         }
       }
 

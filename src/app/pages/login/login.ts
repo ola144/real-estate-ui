@@ -41,6 +41,7 @@ export class Login implements OnInit {
         toast.error(sessionExpired);
 
         sessionStorage.removeItem('sessionExpired');
+        localStorage.removeItem('userId');
       }
     }
   }
@@ -77,6 +78,7 @@ export class Login implements OnInit {
       next: (res: any) => {
         if (res?.success) {
           const data = res.user;
+          localStorage.setItem('userId', data?.id ?? '');
           console.log(data);
           this.authService.currentUser.set(data);
           toast.success(res.message || 'Signup successfully!');
@@ -110,6 +112,7 @@ export class Login implements OnInit {
         if (res.success) {
           this.authService.currentUser.set(res.user);
           const data = res.user;
+          localStorage.setItem('userId', data?.id ?? '');
           if (data.role === 'admin' || data.role === 'agent') {
             this.router.navigate(['/dashboard/home']);
           } else if (data.role === 'customer') {

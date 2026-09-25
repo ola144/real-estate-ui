@@ -31,7 +31,11 @@ export class App implements OnInit {
           return;
         }
 
-        this.authService.getMe().subscribe();
+        const userId = localStorage.getItem('userId');
+
+        if (userId) {
+          this.authService.getMe().subscribe();
+        }
       });
   }
 

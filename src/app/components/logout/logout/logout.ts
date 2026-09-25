@@ -26,7 +26,8 @@ export class Logout {
     this.loading.set(true);
     this.authService.logout().subscribe({
       next: () => {
-        this.router.navigate(['/']);
+        localStorage.removeItem('userId');
+        this.router.navigate(['/auth/login']);
         this.loading.set(false);
       },
       error: (err) => {
