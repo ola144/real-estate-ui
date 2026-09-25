@@ -53,6 +53,14 @@
           class="transition hover:text-[#d7ef61]"
           >Contact</a
         >
+        @if (authService.currentUser()?.role !== 'customer' && authService.isAuthenticated()) {
+          <a
+            routerLink="/dashboard/home"
+            routerLinkActive="userActiveMenu"
+            class="transition hover:text-[#d7ef61]"
+            >Dashboard</a
+          >
+        }
         @if (!authService.isAuthenticated()) {
           <a routerLink="/auth/login" (click)="showMobileMenu.set(false)" class="px-3 py-2 block"
             >Sign in</a
@@ -197,6 +205,14 @@
           class="transition hover:text-[#d7ef61]"
           >Contact</a
         >
+        @if (authService.currentUser()?.role !== 'customer' && authService.isAuthenticated()) {
+          <a
+            routerLink="/dashboard/home"
+            routerLinkActive="userActiveMenu"
+            class="transition hover:text-[#d7ef61]"
+            >Dashboard</a
+          >
+        }
       </div>
 
       <!-- Mobile -->
