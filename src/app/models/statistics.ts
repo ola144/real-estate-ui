@@ -86,6 +86,9 @@ export interface IAdminDashboardStatistics {
 
   customers: {
     total: number;
+    currentCustomers: number;
+    previousCustomers: number;
+    percentageChange: number;
   };
 
   revenueChart: {
