@@ -3,39 +3,32 @@ name: Deploy Angular App to Vercel
 on:
   push:
     branches:
-      - main
-
-  workflow_dispatch:
+      - master
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
 
-    permissions:
-      contents: read
-      id-token: write
+    env:
+      VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
 
     steps:
-      - name: Checkout repository
+      - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Setup Node.js
+      - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version: 22
-          cache: npm
-
-      - name: Install dependencies
-        run: npm ci
 
       - name: Install Vercel CLI
-        run: npm install --global vercel@latest
+        run: npm install -g vercel@latest
 
       - name: Pull Vercel project settings
-        run:  vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
+        run: vercel pull --yes --environment=production
 
-      - name: Build Vercel project
+      - name: Build
         run: vercel build --prod
 
-      - name: Deploy to Vercel
+      - name: Deploy
         run: vercel deploy --prebuilt --prod
