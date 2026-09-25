@@ -25,5 +25,8 @@ jobs:
     - run: npm ci
     - run: npm test
 
+    - name: Install Vercel CLI
+      run: npm install --global vercel@latest
+
     - name: Deploy to Vercel Action
       run: vercel deploy --prebuilt --prod --token=${{ secrets.VERCEL_TOKEN }}
